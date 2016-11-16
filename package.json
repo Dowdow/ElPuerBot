@@ -1,0 +1,12 @@
+{
+  "name": "elpuerbot",
+  "version": "0.0.1",
+  "description": "A peasant bot for Discord",
+  "author": "Léo Riera",
+  "license": "MIT",
+  "main": "app.js",
+  "dependencies": {
+    "discord.js": "^10.0.1",
+    "dotenv": "^2.0.0"
+  }
+}
