@@ -1,8 +1,11 @@
-const http = require('http');
 const Discord = require('discord.js');
+const rls = require('rls-api');
 require('dotenv').config();
 
 const client = new Discord.Client();
+const rlsclient = new rls.Client({
+    token: process.env.RLS_TOKEN
+});
 
 client.on('ready', () => {
     console.log('Logged in as ' + client.user.username + '#' + client.user.discriminator);
@@ -12,51 +15,44 @@ client.on('message', msg => {
     processMsg(msg);
 });
 
-var options = {
-    host: 'www.google.com',
-    port: 80,
-    path: '/index.html'
+var commands = {
+    'el-puer': {
+        'description': 'Usage : !el-puer - Appelle ce brave El Puer',
+        method: function (msg) {
+            msg.channel.sendMessage('Je suis El Puer, fidèle et brave animal ! :dog:');
+        }
+    },
+    'rl-rank': {
+        'description': 'Usage : !rl-rank [steam-id] - Affiche le classement Rocket League du joueur [steam_id]',
+        method: function (msg, steamid) {
+            rlsclient.getPlayer(steamid, rls.platforms.STEAM, function (status, data) {
+                if (status == 200) {
+                    console.log(data);
+                }
+            });
+        }
+    },
+    'help': {
+        'description': 'Usage : !help - Affiche l\'aide pour ce brave ElPuer',
+        method: function (msg) {
+            var response = 'Liste des commandes pour ce brave El Puer : \n';
+            for (var command in commands) {
+                response += commands[command].description + '\n';
+            }
+            msg.channel.sendMessage(response);
+        }
+    }
 };
-
-http.get(options, function (res) {
-    console.log("Got response: " + res.statusCode);
-}).on('error', function (e) {
-    console.log("Got error: " + e.message);
-});
 
 function processMsg(msg) {
     // Si l'utilisateur a le rôle mongolien
     if (msg.member._roles.find(function (element) {
             return element === '182943519697141761';
         })) {
-        msg.reply('Ta gueule sous race :middle_finger:', {'tts': true});
+        msg.reply('Ta gueule sous race :middle_finger:');
         return;
     }
     // Traitement du message
-    switch (msg.content) {
-        case 'ski':
-            ski();
-            break;
-    }
-}
-
-function ski() {
-    var options = {
-        host: 'www.skiinfo.fr',
-        port: 80,
-        path: '/france/bulletin-neige.html?&ud=1&o=resort'
-    };
-    http.get(options, function (res) {
-        var data = '';
-        res.on('data', function (chunk) {
-            data += chunk;
-        });
-        console.log(data.toString());
-    }).on('error', function (e) {
-        console.log("Got error: " + e.message);
-    });
-
 }
 
 client.login(process.env.EL_PUER_TOKEN);
-ski();
