@@ -16,26 +16,28 @@ client.on('message', msg => {
 });
 
 var commands = {
-    'el-puer': {
-        'description': 'Usage : !el-puer - Appelle ce brave El Puer',
-        method: function (msg) {
+    '!el-puer': {
+        'description': '!el-puer - Appelle ce brave El Puer',
+        method: function (msg, args) {
             msg.channel.sendMessage('Je suis El Puer, fidèle et brave animal ! :dog:');
         }
     },
-    'rl-rank': {
-        'description': 'Usage : !rl-rank [steam-id] - Affiche le classement Rocket League du joueur [steam_id]',
-        method: function (msg, steamid) {
-            rlsclient.getPlayer(steamid, rls.platforms.STEAM, function (status, data) {
+    '!rl-rank': {
+        'description': '!rl-rank [steam-id] - Affiche le classement Rocket League du joueur [steam_id]',
+        method: function (msg, args) {
+            rlsclient.getPlayer(args[0], rls.platforms.STEAM, function (status, data) {
                 if (status == 200) {
                     console.log(data);
+                } else {
+                    msg.channel.sendMessage('Le service Rocket League Stats est inaccessible pour l\'instant ... :dog:');
                 }
             });
         }
     },
-    'help': {
-        'description': 'Usage : !help - Affiche l\'aide pour ce brave ElPuer',
-        method: function (msg) {
-            var response = 'Liste des commandes pour ce brave El Puer : \n';
+    '!help': {
+        'description': '!help - Affiche l\'aide pour ce brave ElPuer',
+        method: function (msg, args) {
+            var response = 'Liste des commandes pour ce brave El Puer :dog: : \n';
             for (var command in commands) {
                 response += commands[command].description + '\n';
             }
@@ -53,6 +55,19 @@ function processMsg(msg) {
         return;
     }
     // Traitement du message
+    if (msg.author.id != client.user.id) {
+        var command = msg.content.match(/^![\w+\-]+/);
+        if (command == null) {
+            return;
+        }
+        var args = command['input'].split(' ').splice(1);
+        if(commands.hasOwnProperty(command[0])) {
+            commands[command[0]].method(msg, args);
+            return;
+        }
+        msg.reply('Commande inconnue ... !help pour avoir la liste des commandes de ce brave El Puer :dog:')
+    }
+
 }
 
 client.login(process.env.EL_PUER_TOKEN);
