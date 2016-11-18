@@ -61,7 +61,7 @@ module.exports = {
                     });
                 } else {
                     if (res.statusCode == 404) {
-                        reject('Tu n\'es pas classé');
+                        reject('Ce joueur n\'existe pas ou n\'est pas encore classé ...');
                     } else {
                         reject('Le service est indisponible pour le moment ...');
                     }
