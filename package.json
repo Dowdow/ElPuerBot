@@ -4,6 +4,10 @@
   "description": "A peasant bot for Discord",
   "author": "Léo Riera",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dowdow/ElPuerBot.git"
+  },
   "main": "app.js",
   "dependencies": {
     "discord.js": "^10.0.1",
