@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const rls = require('rls-api');
 const lol = require('./lol');
+const ow = require('./ow');
 require('dotenv').config();
 
 // CONFIGUTATION DES MODULES
@@ -20,14 +21,18 @@ client.on('message', msg => {
 
 var commands = {
     '!el-puer': {
-        'description': '!el-puer - Appelle ce brave El Puer',
+        'description': '**!el-puer** - Appelle ce brave El Puer',
         method: (msg, args) => {
             msg.channel.sendMessage('Je suis El Puer, fidèle et brave animal ! :dog:');
         }
     },
     '!rl-rank': {
-        'description': '!rl-rank [steam-id] - Affiche le classement Rocket League du joueur [steam_id]',
+        'description': '**!rl-rank [steam-id]** - Affiche le classement Rocket League du joueur [steam_id]',
         method: (msg, args) => {
+            if (args.length < 1) {
+                msg.reply('Usage : !rl-rank [steam-id]');
+                return;
+            }
             rlsclient.getPlayer(args[0], rls.platforms.STEAM, (status, data) => {
                 if (status == 200) {
                     console.log(data);
@@ -38,7 +43,7 @@ var commands = {
         }
     },
     '!lol': {
-        'description': '!lol [region] [summoner] - Affiche le classement League of Legends du joueur [summoner]',
+        'description': '**!lol [region] [summoner]** - Affiche le classement League of Legends du joueur [summoner]',
         method: (msg, args) => {
             if (args.length < 2) {
                 msg.reply('Usage : !lol [region] [summoner]');
@@ -59,8 +64,26 @@ var commands = {
             });
         }
     },
+    '!ow': {
+        'description': '**!ow [region] [battle-tag]** - Affiche le classement Overwatch du joueur [battle-tag]',
+        method: (msg, args) => {
+          if (args.length < 2) {
+              msg.reply('Usage : !ow [region] [battle-tag]');
+              return;
+          }
+          ow.setRegion(args[0]).then(() => {
+              ow.getProfileByBattleTag(args[1]).then((message) => {
+                  msg.channel.sendMessage(message);
+              }).catch((reason) => {
+                msg.reply(reason);
+              });
+          }).catch(() => {
+              msg.reply('Cette région n\'existe pas ... \nRégions disponible : eu, us, kr, cn, global');
+          });
+        }
+    },
     '!help': {
-        'description': '!help - Affiche l\'aide pour ce brave ElPuer',
+        'description': '**!help** - Affiche l\'aide pour ce brave ElPuer',
         method: (msg, args) => {
             var response = 'Liste des commandes pour ce brave El Puer :dog: : \n';
             for (var command in commands) {
