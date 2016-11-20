@@ -2,7 +2,7 @@ const https = require('https');
 
 var regions = ['br', 'eune', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'pbe'];
 var region = '';
-var key = '';
+var key = process.env.RIOT_KEY;
 
 module.exports = {
     getSummonerId: (name) => {
@@ -80,9 +80,6 @@ module.exports = {
                 reject();
             }
         });
-    },
-    setKey: (k) => {
-        key = k;
     }
 };
 

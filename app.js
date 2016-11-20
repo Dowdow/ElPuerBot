@@ -1,15 +1,12 @@
+require('dotenv').config();
 const Discord = require('discord.js');
-const rls = require('rls-api');
 const lol = require('./lol');
 const ow = require('./ow');
-require('dotenv').config();
+const wow = require('./wow');
+const rl = require('./rl');
 
 // CONFIGUTATION DES MODULES
 const client = new Discord.Client();
-const rlsclient = new rls.Client({
-    token: process.env.RLS_TOKEN
-});
-lol.setKey(process.env.RIOT_KEY);
 
 client.on('ready', () => {
     console.log('Logged in as ' + client.user.username + '#' + client.user.discriminator);
@@ -33,12 +30,10 @@ var commands = {
                 msg.reply('Usage : !rl-rank [steam-id]');
                 return;
             }
-            rlsclient.getPlayer(args[0], rls.platforms.STEAM, (status, data) => {
-                if (status == 200) {
-                    console.log(data);
-                } else {
-                    msg.channel.sendMessage('Le service Rocket League Stats est inaccessible pour l\'instant ... :dog:');
-                }
+            rl.getPlayerRanks(args[0]).then((message) => {
+                msg.channel.sendMessage(message);
+            }).catch((reason) => {
+                msg.reply(reason);
             });
         }
     },
@@ -82,6 +77,20 @@ var commands = {
           });
         }
     },
+    '!wow' : {
+        'description': '**!wow [region] [realm] [character]** - Affiche des infos sur le personnage [character] de World of Warcraft',
+        method: (msg, args) => {
+            if (args.length < 3) {
+                msg.reply('Usage : !wow [region] [realm] [character]');
+                return;
+            }
+            wow.getCharacterInformations(args[0], args[1], args[2]).then((message) => {
+
+            }).catch((reason) => {
+                msg.reply(reason);
+            });
+        }
+    },
     '!help': {
         'description': '**!help** - Affiche l\'aide pour ce brave ElPuer',
         method: (msg, args) => {
@@ -116,5 +125,11 @@ function processMsg(msg) {
         msg.reply('Commande inconnue ... !help pour avoir la liste des commandes de ce brave El Puer :dog:')
     }
 }
+
+/*wow.getCharacterInformations('eu', 'uldaman', 'dayke').then((message) => {
+
+}).catch((reason) => {
+  console.log(reason);
+});*/
 
 client.login(process.env.EL_PUER_TOKEN);
