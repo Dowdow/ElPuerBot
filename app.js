@@ -18,6 +18,10 @@ client.on('message', msg => {
     processMsg(msg);
 });
 
+client.on('disconnect', () => {
+    console.log(`Disconnected`);
+});
+
 var commands = {
     '!el-puer': {
         'description': '**!el-puer** - Appelle ce brave El Puer',
@@ -126,6 +130,8 @@ var commands = {
 };
 
 function processMsg(msg) {
+    // On ne traite pas les messages de bot
+    if (msg.author.bot) return;
     // Si l'utilisateur a le rôle mongolien
     if (msg.member._roles.find((element) => {
             return element === '182943519697141761';
@@ -134,18 +140,20 @@ function processMsg(msg) {
         return;
     }
     // Traitement du message
-    if (msg.author.id != client.user.id) {
-        var command = msg.content.match(/^![\w+\-]+/);
-        if (command == null) {
-            return;
-        }
-        var args = command['input'].split(' ').splice(1);
-        if (commands.hasOwnProperty(command[0])) {
-            commands[command[0]].method(msg, args);
-            return;
-        }
-        msg.reply('Commande inconnue ... !help pour avoir la liste des commandes de ce brave El Puer :dog:');
+    var command = msg.content.match(/^![\w+\-]+/);
+    if (command == null) {
+        return;
     }
+    var args = command['input'].split(' ').splice(1);
+    if (commands.hasOwnProperty(command[0])) {
+        commands[command[0]].method(msg, args);
+        return;
+    }
+    msg.reply('Commande inconnue ... !help pour avoir la liste des commandes de ce brave El Puer :dog:');
 }
 
 client.login(process.env.EL_PUER_TOKEN);
+
+process.on("unhandledRejection", err => {
+    console.error("Uncaught Promise Error: \n" + err.stack);
+});
