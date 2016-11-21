@@ -13,7 +13,7 @@ module.exports = {
                 .then(response => {
                     let data = response.data;
                     let message = `${data.name} - ${data.realm} - ${data.level} - ${races[data.race]} - ${classes[data.class]} - ${factions[data.faction]}`;
-                    if(typeof data.guild !== 'undefined') {
+                    if (typeof data.guild !== 'undefined') {
                         message += `\nGuild : ${data.guild.name} - ${data.guild.realm} - ${data.guild.members} members`;
                     }
                     message += `\nPrimary : `;
