@@ -7,7 +7,7 @@ var key = process.env.RIOT_KEY;
 module.exports = {
     getSummonerId: (name) => {
         return new Promise((resolve, reject) => {
-            https.get('https://' + region + '.api.pvp.net/api/lol/' + region + '/v1.4/summoner/by-name/' + encodeURI(name) + '?api_key=' + key, (res) => {
+            https.get(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${encodeURI(name)}?api_key=${key}`, (res) => {
                 var data = '';
                 if (res.statusCode == 200) {
                     res.on('data', (d) => {
@@ -28,7 +28,7 @@ module.exports = {
     },
     getSummonerLeague: (id) => {
         return new Promise((resolve, reject) => {
-            https.get('https://' + region + '.api.pvp.net/api/lol/' + region + '/v2.5/league/by-summoner/' + id + '/entry?api_key=' + key, (res) => {
+            https.get(`https://${region}.api.pvp.net/api/lol/${region}/v2.5/league/by-summoner/${id}/entry?api_key=${key}`, (res) => {
                 var data = '';
                 if (res.statusCode == 200) {
                     res.on('data', (d) => {
@@ -40,19 +40,19 @@ module.exports = {
                         for (var l in leagues) {
                             if (leagues.hasOwnProperty(l)) {
                                 let league = leagues[l];
-                                message += modes[league.queue] + ' - ' + league.name + ' - ' + league.tier.cFL() + ' ' +
-                                    divisions[league.entries[0].division] + ' - ' + league.entries[0].leaguePoints + 'pts\nWins : ' +
-                                    league.entries[0].wins + ' - Losses : ' + league.entries[0].losses + ' - Rate : ' +
-                                    ((league.entries[0].wins / (league.entries[0].wins + league.entries[0].losses)) * 100).toFixed(2) + '%';
+                                message += `${modes[league.queue]} - ${league.name} - ${league.tier.cFL()} `;
+                                message += `${divisions[league.entries[0].division]} - ${league.entries[0].leaguePoints}pts\n`;
+                                message += `Wins : ${league.entries[0].wins} - Losses : ${league.entries[0].losses} - `;
+                                message += `Rate : ${((league.entries[0].wins / (league.entries[0].wins + league.entries[0].losses)) * 100).toFixed(2)}%`;
                                 message += league.entries[0].isFreshBlood ? ' :baby: ' : '';
                                 message += league.entries[0].isVeteran ? ' :older_man: ' : '';
                                 message += league.entries[0].isHotStreak ? ' :fire: ' : '';
                                 message += league.entries[0].isInactive ? ':zzz: ' : '';
                                 if (typeof league.entries[0].miniSeries !== 'undefined') {
-                                    message += '\nBO : ' + league.entries[0].miniSeries.progress
-                                            .replaceAll('L', ' :heavy_multiplication_x:')
-                                            .replaceAll('W', ' :heavy_check_mark:')
-                                            .replaceAll('N', ' :heavy_minus_sign:');
+                                    message += `\nBO : ${league.entries[0].miniSeries.progress
+                                        .replaceAll('L', ' :heavy_multiplication_x:')
+                                        .replaceAll('W', ' :heavy_check_mark:')
+                                        .replaceAll('N', ' :heavy_minus_sign:')}`;
                                 }
                                 message += '\n';
                             }
@@ -77,7 +77,7 @@ module.exports = {
                 region = r;
                 resolve();
             } else {
-                reject();
+                reject(`Cette région n'existe pas ...\nRégions disponible : ${regions.join(', ')}`);
             }
         });
     }
@@ -142,6 +142,5 @@ String.prototype.cFL = function () {
 };
 
 String.prototype.replaceAll = function (search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search, 'g'), replacement);
+    return this.replace(new RegExp(search, 'g'), replacement);
 };
