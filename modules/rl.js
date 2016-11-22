@@ -4,7 +4,7 @@ const rlsclient = new rls.Client({
 });
 
 module.exports = {
-    getPlayerRanks: (steamid) => {
+    getPlayerRanks: steamid => {
         return new Promise((resolve, reject) => {
             rlsclient.getPlayer(steamid, rls.platforms.STEAM, (status, data) => {
                 if (status == 200) {

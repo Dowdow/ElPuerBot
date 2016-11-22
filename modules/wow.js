@@ -6,20 +6,20 @@ var regions = ['us', 'eu', 'sea', 'kr', 'tw', 'cn'];
 var region = '';
 
 module.exports = {
-    getCharacterInformations: (realm, character) => {
+    getCharacterInformations: (realm, character, emojis) => {
         return new Promise((resolve, reject) => {
             blizzard.wow.character(['profile', 'guild', 'professions', 'progression', 'items'],
                 {origin: region, realm: realm.slugify(), name: character})
                 .then(response => {
                     let data = response.data;
-                    let message = `${data.name} - ${data.realm} - ${data.level} - ${races[data.race]} - ${classes[data.class]} - ${factions[data.faction]}`;
+                    let message = `${data.name} - ${data.realm} - ${data.level} - ${races[data.race]} - ${emojis.find('name', `wow${data.class}`)} ${classes[data.class]} - ${emojis.find('name', `wow${factions[data.faction].icon}`)} ${factions[data.faction].name}`;
                     if (typeof data.guild !== 'undefined') {
                         message += `\nGuild : ${data.guild.name} - ${data.guild.realm} - ${data.guild.members} members`;
                     }
                     message += `\nPrimary : `;
                     for (let p in data.professions.primary) {
                         if (data.professions.primary.hasOwnProperty(p)) {
-                            message += `${data.professions.primary[p].name} (${data.professions.primary[p].rank}/${data.professions.primary[p].max})`;
+                            message += `${emojis.find('name', `wow${data.professions.primary[p].id}`)} ${data.professions.primary[p].name} (${data.professions.primary[p].rank}/${data.professions.primary[p].max})`;
                             if (p != (data.professions.primary.length - 1)) {
                                 message += ` - `
                             }
@@ -28,7 +28,7 @@ module.exports = {
                     message += `\nSecondary : `;
                     for (let p in data.professions.secondary) {
                         if (data.professions.secondary.hasOwnProperty(p)) {
-                            message += `${data.professions.secondary[p].name} (${data.professions.secondary[p].rank}/${data.professions.secondary[p].max})`;
+                            message += `${emojis.find('name', `wow${data.professions.secondary[p].id}`)} ${data.professions.secondary[p].name} (${data.professions.secondary[p].rank}/${data.professions.secondary[p].max})`;
                             if (p != (data.professions.secondary.length - 1)) {
                                 message += ` - `
                             }
@@ -56,7 +56,7 @@ module.exports = {
     },
     setRegion: (r) => {
         return new Promise((resolve, reject) => {
-            if (regions.find((element) => {
+            if (regions.find(element => {
                     return element === r;
                 })) {
                 region = r;
@@ -69,8 +69,14 @@ module.exports = {
 };
 
 var factions = {
-    '0': 'Alliance',
-    '1': 'Horde',
+    '0': {
+        'name': 'Alliance',
+        'icon': 'a'
+    },
+    '1': {
+        'name': 'Horde',
+        'icon': 'h'
+    },
 };
 
 var classes = {
@@ -128,7 +134,7 @@ function calculProgress(bosses) {
             }
         }
     }
-    return `lfr ${lfr}/${l} - nm ${nm}/${l} - hm ${hm}/${l} - mm ${mm}/${l}`;
+    return `:baby: ${lfr}/${l} - :boy: ${nm}/${l} - :man: ${hm}/${l} - :older_man: ${mm}/${l}`;
 }
 
 String.prototype.slugify = function () {

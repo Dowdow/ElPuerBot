@@ -1,14 +1,13 @@
 require('dotenv').config();
+const winston = require('winston');
 const Discord = require('discord.js');
 const lol = require('./modules/lol');
 const ow = require('./modules/ow');
 const wow = require('./modules/wow');
 const rl = require('./modules/rl');
 
-// CONFIGUTATION DES MODULES
+// DISCORD EVENTS
 const client = new Discord.Client();
-
-const DEFAULT_ERROR_MESSAGE = 'Je ne me sens pas très bien ... :nauseated_face: Je subis un bug prévenez mon maître !';
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.username}#${client.user.discriminator}`);
@@ -22,6 +21,15 @@ client.on('disconnect', () => {
     console.log(`Disconnected`);
 });
 
+// LOG CONFIGURATION
+var logger = new (winston.Logger)({
+    transports: [
+        new (winston.transports.Console)(),
+        new (winston.transports.File)({filename: 'elpuer.log'})
+    ]
+});
+
+// COMMANDS
 var commands = {
     '!el-puer': {
         'description': '**!el-puer** - Appelle ce brave El Puer',
@@ -37,18 +45,18 @@ var commands = {
                 return;
             }
             lol.setRegion(args[0]).then(() => {
-                lol.getSummonerId(args[1]).then((id) => {
-                    lol.getSummonerLeague(id).then((message)=> {
-                        msg.channel.sendMessage(message).catch(() => {
-                            message.reply(DEFAULT_ERROR_MESSAGE);
+                lol.getSummonerId(args[1]).then(id => {
+                    lol.getSummonerLeague(id, msg.guild.emojis).then(message => {
+                        msg.channel.sendMessage(message).catch(error => {
+                            logger.log('error', `Erreur LoL - ${message}`, error);
                         });
-                    }).catch((reason)=> {
+                    }).catch(reason => {
                         msg.reply(reason);
                     });
-                }).catch((reason) => {
+                }).catch(reason => {
                     msg.reply(reason);
                 });
-            }).catch((reason) => {
+            }).catch(reason => {
                 msg.reply(reason);
             });
         }
@@ -61,19 +69,16 @@ var commands = {
                 return;
             }
             ow.setRegion(args[0]).then(() => {
-                ow.getProfileByBattleTag(args[1]).then((obj) => {
-                    msg.channel.sendMessage(obj.message).catch(() => {
-                        message.reply(DEFAULT_ERROR_MESSAGE);
+                ow.getProfileByBattleTag(args[1]).then(message => {
+                    let icon = message.match(/ow\d+/)[0];
+                    message = message.replace(`:${icon}:`, msg.guild.emojis.find('name', icon));
+                    msg.channel.sendMessage(message).catch(error => {
+                        logger.log('error', `Erreur OW Message - ${message}`, error);
                     });
-                    if (obj.thumbnail !== '') {
-                        msg.channel.sendFile(obj.thumbnail).catch(() => {
-                            message.reply(DEFAULT_ERROR_MESSAGE);
-                        });
-                    }
-                }).catch((reason) => {
+                }).catch(reason => {
                     msg.reply(reason);
                 });
-            }).catch((reason) => {
+            }).catch(reason => {
                 msg.reply(reason);
             });
         }
@@ -85,11 +90,11 @@ var commands = {
                 msg.reply('Usage : !rl [steam-id]');
                 return;
             }
-            rl.getPlayerRanks(args[0]).then((message) => {
-                msg.channel.sendMessage(message).catch(() => {
-                    message.reply(DEFAULT_ERROR_MESSAGE);
+            rl.getPlayerRanks(args[0]).then(message => {
+                msg.channel.sendMessage(message).catch(error => {
+                    logger.log('error', `Erreur RL Message - ${message}`, error);
                 });
-            }).catch((reason) => {
+            }).catch(reason => {
                 msg.reply(reason);
             });
         }
@@ -102,17 +107,17 @@ var commands = {
                 return;
             }
             wow.setRegion(args[0]).then(() => {
-                wow.getCharacterInformations(args[1], args[2]).then((obj) => {
-                    msg.channel.sendMessage(obj.message).catch(() => {
-                        message.reply(DEFAULT_ERROR_MESSAGE);
+                wow.getCharacterInformations(args[1], args[2], msg.guild.emojis).then(obj => {
+                    msg.channel.sendMessage(obj.message).catch(error => {
+                        logger.log('error', `Erreur WoW Message - ${obj.message}`, error);
                     });
-                    msg.channel.sendFile(obj.thumbnail).catch(() => {
-                        message.reply(DEFAULT_ERROR_MESSAGE);
+                    msg.channel.sendFile(obj.thumbnail).catch(error => {
+                        logger.log('error', `Erreur WoW Fichier - ${obj.thumbnail}`, error);
                     });
-                }).catch((reason) => {
+                }).catch(reason => {
                     msg.reply(reason);
                 });
-            }).catch((reason) => {
+            }).catch(reason => {
                 msg.reply(reason);
             });
         }
@@ -133,7 +138,7 @@ function processMsg(msg) {
     // On ne traite pas les messages de bot
     if (msg.author.bot) return;
     // Si l'utilisateur a le rôle mongolien
-    if (msg.member._roles.find((element) => {
+    if (msg.member._roles.find(element => {
             return element === '182943519697141761';
         })) {
         msg.reply('Ta gueule sous race :middle_finger:');
@@ -152,8 +157,18 @@ function processMsg(msg) {
     msg.reply('Commande inconnue ... !help pour avoir la liste des commandes de ce brave El Puer :dog:');
 }
 
-client.login(process.env.EL_PUER_TOKEN);
-
+// ERROR MANAGEMENT
 process.on("unhandledRejection", err => {
-    console.error("Uncaught Promise Error: \n" + err.stack);
+    logger.log('error', 'Uncaught Promise Error:', err.stack);
 });
+
+process.on('uncaughtException', err => {
+    logger.log('error', 'Uncaught Exception Error', err.stack);
+});
+
+process.on('SIGINT', () => {
+    client.destroy();
+    process.exit();
+});
+
+client.login(process.env.EL_PUER_TOKEN);

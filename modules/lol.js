@@ -5,12 +5,12 @@ var region = '';
 var key = process.env.RIOT_KEY;
 
 module.exports = {
-    getSummonerId: (name) => {
+    getSummonerId: name => {
         return new Promise((resolve, reject) => {
-            https.get(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${encodeURI(name)}?api_key=${key}`, (res) => {
+            https.get(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${encodeURI(name)}?api_key=${key}`, res => {
                 var data = '';
                 if (res.statusCode == 200) {
-                    res.on('data', (d) => {
+                    res.on('data', d => {
                         data += d;
                     });
                     res.on('end', () => {
@@ -26,12 +26,12 @@ module.exports = {
             });
         });
     },
-    getSummonerLeague: (id) => {
+    getSummonerLeague: (id, emojis) => {
         return new Promise((resolve, reject) => {
-            https.get(`https://${region}.api.pvp.net/api/lol/${region}/v2.5/league/by-summoner/${id}/entry?api_key=${key}`, (res) => {
+            https.get(`https://${region}.api.pvp.net/api/lol/${region}/v2.5/league/by-summoner/${id}/entry?api_key=${key}`, res => {
                 var data = '';
                 if (res.statusCode == 200) {
-                    res.on('data', (d) => {
+                    res.on('data', d => {
                         data += d;
                     });
                     res.on('end', () => {
@@ -40,7 +40,7 @@ module.exports = {
                         for (var l in leagues) {
                             if (leagues.hasOwnProperty(l)) {
                                 let league = leagues[l];
-                                message += `${modes[league.queue]} - ${league.name} - ${league.tier.cFL()} `;
+                                message += `${emojis.find('name', tiers[league.tier])} - ${modes[league.queue]} - ${league.name} - ${league.tier.cFL()} `;
                                 message += `${divisions[league.entries[0].division]} - ${league.entries[0].leaguePoints}pts\n`;
                                 message += `Wins : ${league.entries[0].wins} - Losses : ${league.entries[0].losses} - `;
                                 message += `Rate : ${((league.entries[0].wins / (league.entries[0].wins + league.entries[0].losses)) * 100).toFixed(2)}%`;
@@ -71,7 +71,7 @@ module.exports = {
     },
     setRegion: (r) => {
         return new Promise((resolve, reject) => {
-            if (regions.find((element) => {
+            if (regions.find(element => {
                     return element === r;
                 })) {
                 region = r;
@@ -127,6 +127,16 @@ var modes = {
     'TEAM_BUILDER_DRAFT_RANKED_5x5': 'Ranked 5v5 Draft Pick',
     'TEAM_BUILDER_RANKED_SOLO': 'Ranked Solo games from current season that use Team Builder matchmaking',
     'RANKED_FLEX_SR': 'Ranked Flex Summoner\'s Rift'
+};
+
+var tiers = {
+    'BRONZE': 'lol1',
+    'SILVER': 'lol2',
+    'GOLD': 'lol3',
+    'PLATINIUM': 'lol4',
+    'DIAMOND': 'lol5',
+    'MASTER': 'lol6',
+    'CHALLENGER': 'lol7',
 };
 
 var divisions = {

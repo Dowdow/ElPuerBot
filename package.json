@@ -13,6 +13,7 @@
     "blizzard.js": "^1.6.0",
     "discord.js": "^10.0.1",
     "dotenv": "^2.0.0",
-    "rls-api": "^1.0.1"
+    "rls-api": "^1.0.1",
+    "winston": "^2.3.0"
   }
 }
