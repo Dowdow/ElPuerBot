@@ -5,6 +5,7 @@ const lol = require('./modules/lol');
 const ow = require('./modules/ow');
 const wow = require('./modules/wow');
 const rl = require('./modules/rl');
+const music = require('./modules/music');
 
 // DISCORD EVENTS
 const client = new Discord.Client();
@@ -122,12 +123,40 @@ var commands = {
             });
         }
     },
+    '!play': {
+        'description': '**!play [youtube-url]** - Joue une musique YouTube dans le salon actuel',
+        method: (msg, args) => {
+            if (args.length < 1) {
+                msg.reply('Usage : !play [youtube-url]');
+                return;
+            }
+            music.play(msg.member.voiceChannel, args[0]).then(message => {
+                msg.channel.sendMessage(message).catch(error => {
+                    logger.log('error', `Erreur Play Message - ${message}`, error);
+                });
+            }).catch(reason => {
+                msg.reply(reason);
+            });
+        }
+    },
+    '!stop': {
+        'description': '**!stop** - Stoppe la lecture d\'une musique YouTube dans le salon actuel',
+        method: (msg, args) => {
+            music.stop(msg.member.voiceChannel).then(message => {
+                msg.channel.sendMessage(message).catch(error => {
+                    logger.log('error', `Erreur Stop Message - ${message}`, error);
+                });
+            }).catch(reason => {
+                msg.reply(reason);
+            });
+        }
+    },
     '!help': {
         'description': '**!help** - Affiche l\'aide pour ce brave ElPuer',
         method: (msg, args) => {
-            var response = 'Liste des commandes pour ce brave El Puer :dog: : \n';
+            var response = 'Liste des commandes pour ce brave El Puer :dog: : \n\n';
             for (var command in commands) {
-                response += commands[command].description + '\n';
+                response += commands[command].description + '\n\n';
             }
             msg.channel.sendMessage(response);
         }

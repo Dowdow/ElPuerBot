@@ -16,7 +16,7 @@ module.exports = {
                     if (typeof data.guild !== 'undefined') {
                         message += `\nGuild : ${data.guild.name} - ${data.guild.realm} - ${data.guild.members} members`;
                     }
-                    message += `\nPrimary : `;
+                    message += `\n\nPrimary : `;
                     for (let p in data.professions.primary) {
                         if (data.professions.primary.hasOwnProperty(p)) {
                             message += `${emojis.find('name', `wow${data.professions.primary[p].id}`)} ${data.professions.primary[p].name} (${data.professions.primary[p].rank}/${data.professions.primary[p].max})`;
@@ -34,7 +34,7 @@ module.exports = {
                             }
                         }
                     }
-                    message += `\nItem level max : ${data.items.averageItemLevel} - Item level equipped : ${data.items.averageItemLevelEquipped}`;
+                    message += `\n\nItem level max : ${data.items.averageItemLevel} - Item level equipped : ${data.items.averageItemLevelEquipped}\n`;
                     let raids = data.progression.raids.slice(-3);
                     for (let r in raids) {
                         if (raids.hasOwnProperty(r)) {
