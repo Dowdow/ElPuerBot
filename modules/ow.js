@@ -1,13 +1,13 @@
 const https = require('https');
 
-var regions = ['eu', 'us', 'kr', 'cn', 'global'];
-var region = '';
+let regions = ['eu', 'us', 'kr', 'cn', 'global'];
+let region = '';
 
 module.exports = {
     getProfileByBattleTag: battletag => {
         return new Promise((resolve, reject) => {
             https.get(`https://api.lootbox.eu/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}/profile`, res => {
-                var data = '';
+                let data = '';
                 res.on('data', d => {
                     data += d;
                 });
@@ -15,7 +15,7 @@ module.exports = {
                     data = JSON.parse(data);
                     if (typeof data.statusCode === 'undefined') {
                         let info = data.data;
-                        var message = `${info.username} - Level : ${info.level}`;
+                        let message = `${info.username} - Level : ${info.level}`;
                         if (Object.keys(info.games.quick).length !== 0 && info.games.quick.constructor === Object) {
                             message += `\nQuick : ${info.games.quick.wins} wins - ${info.playtime.quick}`;
                         }

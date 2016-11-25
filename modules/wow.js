@@ -2,8 +2,8 @@ const blizzard = require('blizzard.js').initialize({
     apikey: process.env.BATTLENET_API_KEY
 });
 
-var regions = ['us', 'eu', 'sea', 'kr', 'tw', 'cn'];
-var region = '';
+let regions = ['us', 'eu', 'sea', 'kr', 'tw', 'cn'];
+let region = '';
 
 module.exports = {
     getCharacterInformations: (realm, character, emojis) => {
@@ -68,7 +68,7 @@ module.exports = {
     }
 };
 
-var factions = {
+let factions = {
     '0': {
         'name': 'Alliance',
         'icon': 'a'
@@ -79,7 +79,7 @@ var factions = {
     },
 };
 
-var classes = {
+let classes = {
     '1': "Warrior",
     '2': "Paladin",
     '3': "Hunter",
@@ -94,7 +94,7 @@ var classes = {
     '12': "Demon Hunter",
 };
 
-var races = {
+let races = {
     '1': 'Human',
     '2': 'Orc',
     '3': 'Dwarf',

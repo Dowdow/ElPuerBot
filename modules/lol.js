@@ -1,14 +1,14 @@
 const https = require('https');
 
-var regions = ['br', 'eune', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'pbe'];
-var region = '';
-var key = process.env.RIOT_KEY;
+let regions = ['br', 'eune', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'pbe'];
+let region = '';
+let key = process.env.RIOT_KEY;
 
 module.exports = {
     getSummonerId: name => {
         return new Promise((resolve, reject) => {
             https.get(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${encodeURI(name)}?api_key=${key}`, res => {
-                var data = '';
+                let data = '';
                 if (res.statusCode == 200) {
                     res.on('data', d => {
                         data += d;
@@ -29,15 +29,15 @@ module.exports = {
     getSummonerLeague: (id, emojis) => {
         return new Promise((resolve, reject) => {
             https.get(`https://${region}.api.pvp.net/api/lol/${region}/v2.5/league/by-summoner/${id}/entry?api_key=${key}`, res => {
-                var data = '';
+                let data = '';
                 if (res.statusCode == 200) {
                     res.on('data', d => {
                         data += d;
                     });
                     res.on('end', () => {
                         let leagues = JSON.parse(data)[id];
-                        var message = '';
-                        for (var l in leagues) {
+                        let message = '';
+                        for (let l in leagues) {
                             if (leagues.hasOwnProperty(l)) {
                                 let league = leagues[l];
                                 message += `${emojis.find('name', tiers[league.tier])} - ${modes[league.queue]} - ${league.name} - ${league.tier.cFL()} `;
@@ -83,7 +83,7 @@ module.exports = {
     }
 };
 
-var modes = {
+let modes = {
     'CUSTOM': 'Custom',
     'NORMAL_3x3': 'Normal 3v3',
     'NORMAL_5x5_BLIND': 'Normal 5v5 Blind Pick',
@@ -129,7 +129,7 @@ var modes = {
     'RANKED_FLEX_SR': 'Ranked Flex Summoner\'s Rift'
 };
 
-var tiers = {
+let tiers = {
     'BRONZE': 'lol1',
     'SILVER': 'lol2',
     'GOLD': 'lol3',
@@ -139,7 +139,7 @@ var tiers = {
     'CHALLENGER': 'lol7',
 };
 
-var divisions = {
+let divisions = {
     'I': '1',
     'II': '2',
     'III': '3',

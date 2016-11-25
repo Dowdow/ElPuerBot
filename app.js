@@ -23,7 +23,7 @@ client.on('disconnect', () => {
 });
 
 // LOG CONFIGURATION
-var logger = new (winston.Logger)({
+let logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)(),
         new (winston.transports.File)({filename: 'elpuer.log'})
@@ -31,7 +31,7 @@ var logger = new (winston.Logger)({
 });
 
 // COMMANDS
-var commands = {
+let commands = {
     '!el-puer': {
         'description': '**!el-puer** - Appelle ce brave El Puer',
         method: (msg, args) => {
@@ -154,8 +154,8 @@ var commands = {
     '!help': {
         'description': '**!help** - Affiche l\'aide pour ce brave ElPuer',
         method: (msg, args) => {
-            var response = 'Liste des commandes pour ce brave El Puer :dog: : \n\n';
-            for (var command in commands) {
+            let response = 'Liste des commandes pour ce brave El Puer :dog: : \n\n';
+            for (let command in commands) {
                 response += commands[command].description + '\n\n';
             }
             msg.channel.sendMessage(response);
@@ -174,11 +174,11 @@ function processMsg(msg) {
         return;
     }
     // Traitement du message
-    var command = msg.content.match(/^![\w+\-]+/);
+    let command = msg.content.match(/^![\w+\-]+/);
     if (command == null) {
         return;
     }
-    var args = command['input'].split(' ').splice(1);
+    let args = command['input'].split(' ').splice(1);
     if (commands.hasOwnProperty(command[0])) {
         commands[command[0]].method(msg, args);
         return;
