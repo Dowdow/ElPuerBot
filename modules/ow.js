@@ -20,7 +20,13 @@ module.exports = {
                             message += `\nQuick : ${info.games.quick.wins} wins - ${info.playtime.quick}`;
                         }
                         if (Object.keys(info.games.competitive).length !== 0 && info.games.competitive.constructor === Object) {
-                            message += `\nCompetitive : ${info.competitive.rank} pts - ${rankToEmoji(info.competitive.rank_img)} - ${info.playtime.competitive} - `;
+                            message += `\nCompetitive : `;
+                            if (info.competitive.rank == null) {
+                                message += `Unranked`;
+                            } else {
+                                message += `${info.competitive.rank} pts - ${rankToEmoji(info.competitive.rank_img)}`;
+                            }
+                            message += ` - ${info.playtime.competitive} - `;
                             message += `Wins : ${info.games.competitive.wins} - Losses : ${info.games.competitive.lost} - `;
                             message += `Rate : ${((info.games.competitive.wins / info.games.competitive.played) * 100).toFixed(2)}%`;
                         }
