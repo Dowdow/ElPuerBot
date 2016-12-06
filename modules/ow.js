@@ -4,7 +4,7 @@ let regions = ['eu', 'us', 'kr', 'cn', 'global'];
 let region = '';
 
 module.exports = {
-    getProfileByBattleTag: battletag => {
+    getProfileByBattleTag: (battletag, emojis) => {
         return new Promise((resolve, reject) => {
             https.get(`https://api.lootbox.eu/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}/profile`, res => {
                 let data = '';
@@ -24,7 +24,7 @@ module.exports = {
                             if (info.competitive.rank == null) {
                                 message += `Unranked`;
                             } else {
-                                message += `${info.competitive.rank} pts - ${rankToEmoji(info.competitive.rank_img)}`;
+                                message += `${info.competitive.rank} pts - ${emojis.find('name', rankToEmoji(info.competitive.rank_img))}`;
                             }
                             message += ` - ${info.playtime.competitive} - `;
                             message += `Wins : ${info.games.competitive.wins} - Losses : ${info.games.competitive.lost} - `;

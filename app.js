@@ -70,9 +70,7 @@ let commands = {
                 return;
             }
             ow.setRegion(args[0]).then(() => {
-                ow.getProfileByBattleTag(args[1]).then(message => {
-                    let icon = message.match(/ow\d+/)[0];
-                    message = message.replace(`:${icon}:`, msg.guild.emojis.find('name', icon));
+                ow.getProfileByBattleTag(args[1], msg.guild.emojis).then(message => {
                     msg.channel.sendMessage(message).catch(error => {
                         logger.log('error', `Erreur OW Message - ${message}`, error);
                     });
