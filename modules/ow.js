@@ -53,5 +53,5 @@ module.exports = {
 };
 
 function rankToEmoji(rank) {
-    return `:ow${rank.match(/\d+(?=\.png)/)}:`;
+    return `ow${rank.match(/\d+(?=\.png)/)}`;
 }
