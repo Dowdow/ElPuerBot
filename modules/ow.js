@@ -27,7 +27,7 @@ module.exports = {
                                 message += `${info.competitive.rank} pts - ${emojis.find('name', rankToEmoji(info.competitive.rank_img))}`;
                             }
                             message += ` - ${info.playtime.competitive} - `;
-                            message += `Wins : ${info.games.competitive.wins} - Losses : ${info.games.competitive.lost} - `;
+                            message += `Wins : ${info.games.competitive.wins} - Losses + Draws : ${info.games.competitive.lost} - `;
                             message += `Rate : ${((info.games.competitive.wins / info.games.competitive.played) * 100).toFixed(2)}%`;
                         }
                         resolve(message);
