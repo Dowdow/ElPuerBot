@@ -23,7 +23,7 @@ module.exports = {
                 reject(`Vous devez être dans un salon vocal pour utiliser cette fonctionnalité`);
             }
             voiceChannel.leave();
-            resolve(`La musique stoppée`);
+            resolve(`La musique est stoppée`);
         });
     }
 };

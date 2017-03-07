@@ -16,6 +16,7 @@
     "node-opus": "^0.2.4",
     "rls-api": "^1.0.1",
     "winston": "^2.3.1",
-    "ytdl-core": "^0.7.24"
+    "ytdl-core": "^0.7.24",
+    "rss-parser": "^2.5.2"
   }
 }

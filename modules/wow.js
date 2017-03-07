@@ -62,7 +62,7 @@ module.exports = {
                 region = r;
                 resolve();
             } else {
-                reject(`Cette région n'existe pas ...\nRégions disponible : ${regions.join(', ')}`);
+                reject(`Cette région n'existe pas ...\nRégions disponibles : ${regions.join(', ')}`);
             }
         });
     }

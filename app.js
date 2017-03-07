@@ -5,6 +5,7 @@ const lol = require('./modules/lol');
 const ow = require('./modules/ow');
 const wow = require('./modules/wow');
 const rl = require('./modules/rl');
+const jvc = require('./modules/jvc');
 const music = require('./modules/music');
 
 // DISCORD EVENTS
@@ -119,6 +120,22 @@ let commands = {
             }).catch(reason => {
                 msg.reply(reason);
             });
+        }
+    },
+    '!jvc': {
+        'description': '**!jvc [type] [platform]** - Affiche les dernières infos, news et vidéos depuis JVC par platforme',
+        method: (msg, args) => {
+            if (args.length < 2) {
+                msg.reply('Usage : !jvc [type] [platform]');
+                return;
+            }
+            jvc.getNewsByTypePlatform(args[0], args[1]).then(message => {
+                msg.channel.sendMessage(message).catch(error => {
+                    logger.log('error', `Erreur JVC Message - ${message}`, error);
+                });
+            }).catch(reason => {
+                msg.reply(reason);
+            })
         }
     },
     '!play': {
