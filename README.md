@@ -8,8 +8,10 @@ A peasant bot for Discord
 |!ow [region] [battle-tag]|Shows Overwatch player normal and ranked stats.
 |!rl [steam-id]|Still under developpement - Shows Rocket League player ranked stats.
 |!wow [region] [realm] [character]|Shows World of Warcraft character informations, professions, item level and last 3 raids progression.
+|!jvc [type] [platform]|Shows last news from jeuxvideo.com
 |!play [youtube-url]|Plays audio from a YouTube video in a vocal channel
 |!stop|Stop the YouTube audio in the vocal channel
+|!help|Display all commands
 
 ##Installation
 Clone the git repository
