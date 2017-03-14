@@ -1,12 +1,13 @@
 const https = require('https');
 
+let baseUrl = 'https://api.lootbox.eu';
 let regions = ['eu', 'us', 'kr', 'cn', 'global'];
 let region = '';
 
 module.exports = {
     getProfileByBattleTag: (battletag, emojis) => {
         return new Promise((resolve, reject) => {
-            https.get(`https://api.lootbox.eu/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}/profile`, res => {
+            https.get(`${baseUrl}/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}/profile`, res => {
                 let data = '';
                 res.on('data', d => {
                     data += d;

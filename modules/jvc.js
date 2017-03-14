@@ -14,7 +14,7 @@ module.exports = {
                             if (!err) {
                                 let data = parsed.feed;
                                 let message = `${data.title} - ${data.link}\n`;
-                                for (let e in data.entries.splice(10)) {
+                                for (let e in data.entries.splice(5)) {
                                     if (data.entries.hasOwnProperty(e)) {
                                         let entry = data.entries[e];
                                         message += `\n- __${entry.title}__\n\t<${entry.link}>`;
