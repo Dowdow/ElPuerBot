@@ -1,7 +1,8 @@
 # ElPuerBot
 A peasant bot for Discord
 
-###List of useful commands it provides
+### List of useful commands it provides
+
 |Command|Description|
 |-------|-----------|
 |!lol [region] [summoner]|Shows League of Legends player ranked stats.
@@ -13,7 +14,7 @@ A peasant bot for Discord
 |!stop|Stop the YouTube audio in the vocal channel
 |!help|Display all commands
 
-##Installation
+## Installation
 Clone the git repository
 ```
 git clone https://github.com/Dowdow/ElPuerBot.git
@@ -37,8 +38,8 @@ Or if you're not a trash
 ```
 pm2 start app.js
 ```
-###Logs
+### Logs
 El Puer is generating logs using Winston. It will generate a `elpuer.log` file in the main folder.
-###Emojis
+### Emojis
 El Puer is using custom emojis. Since they will not be on your server, you have to upload them with the same name.
 If the emojis are not found you will have some `null` in the command response.
