@@ -10,13 +10,13 @@
   },
   "main": "app.js",
   "dependencies": {
-    "blizzard.js": "^1.6.0",
-    "discord.js": "^10.0.1",
+    "blizzard.js": "^1.6.1",
+    "discord.js": "^11.0.0",
     "dotenv": "^2.0.0",
     "node-opus": "^0.2.4",
     "rls-api": "^1.0.1",
+    "rss-parser": "^2.5.2",
     "winston": "^2.3.1",
-    "ytdl-core": "^0.7.24",
-    "rss-parser": "^2.5.2"
+    "ytdl-core": "^0.7.24"
   }
 }

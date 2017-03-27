@@ -12,7 +12,7 @@ const music = require('./modules/music');
 const client = new Discord.Client();
 
 client.on('ready', () => {
-    console.log(`Logged in as ${client.user.username}#${client.user.discriminator}`);
+    logger.log('info', `Logged in as ${client.user.username}#${client.user.discriminator}`);
 });
 
 client.on('message', msg => {
@@ -20,7 +20,7 @@ client.on('message', msg => {
 });
 
 client.on('disconnect', () => {
-    console.log(`Disconnected`);
+    logger.log('info', `Disconnected`);
 });
 
 // LOG CONFIGURATION
@@ -211,6 +211,7 @@ process.on('uncaughtException', err => {
 });
 
 process.on('SIGINT', () => {
+    logger.log('info', `Manually disconnected`);
     client.destroy();
     process.exit();
 });
