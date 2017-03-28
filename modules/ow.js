@@ -16,22 +16,33 @@ module.exports = {
                     data = JSON.parse(data);
                     if (typeof data.statusCode === 'undefined') {
                         let info = data.data;
-                        let message = `${info.username} - Level : ${info.level}`;
+                        let embed = [
+                            {
+                                'name': info.username,
+                                'value': `Level : ${info.level}`
+                            }
+                        ];
+
                         if (Object.keys(info.games.quick).length !== 0 && info.games.quick.constructor === Object) {
-                            message += `\nQuick : ${info.games.quick.wins} wins - ${info.playtime.quick}`;
+                            embed.push({
+                                'name': 'Quick',
+                                'value': `${info.games.quick.wins} wins - ${info.playtime.quick}`
+                            });
                         }
                         if (Object.keys(info.games.competitive).length !== 0 && info.games.competitive.constructor === Object) {
-                            message += `\nCompetitive : `;
-                            if (info.competitive.rank == null) {
-                                message += `Unranked`;
+                            let item = {};
+                            item.name = `Competitive`;
+                            if (info.competitive.rank === null) {
+                                item.value = `Unranked`;
                             } else {
-                                message += `${info.competitive.rank} pts - ${emojis.find('name', rankToEmoji(info.competitive.rank_img))}`;
+                                item.value = `${info.competitive.rank} pts - ${emojis.find('name', rankToEmoji(info.competitive.rank_img))}`;
                             }
-                            message += ` - ${info.playtime.competitive} - `;
-                            message += `Wins : ${info.games.competitive.wins} - Losses + Draws : ${info.games.competitive.lost} - `;
-                            message += `Rate : ${((info.games.competitive.wins / info.games.competitive.played) * 100).toFixed(2)}%`;
+                            item.value += ` - ${info.playtime.competitive} - `;
+                            item.value += `Wins : ${info.games.competitive.wins} - Losses + Draws : ${info.games.competitive.lost} - `;
+                            item.value += `Rate : ${((info.games.competitive.wins / info.games.competitive.played) * 100).toFixed(2)}%`;
+                            embed.push(item);
                         }
-                        resolve(message);
+                        resolve(embed);
                     } else {
                         reject('Ce Battle Tag n\'existe pas ...');
                     }

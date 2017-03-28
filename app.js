@@ -34,13 +34,15 @@ let logger = new (winston.Logger)({
 // COMMANDS
 let commands = {
     '!el-puer': {
-        'description': '**!el-puer** - Appelle ce brave El Puer',
+        'usage': '!el-puer',
+        'description': 'Appelle ce brave El Puer',
         method: (msg, args) => {
             msg.channel.sendMessage('Je suis El Puer, fidèle et brave animal ! :dog:');
         }
     },
     '!lol': {
-        'description': '**!lol [region] [summoner]** - Affiche le classement League of Legends du joueur [summoner]',
+        'usage': '!lol [region] [summoner]',
+        'description': 'Affiche le classement League of Legends du joueur [summoner]',
         method: (msg, args) => {
             if (args.length < 2) {
                 msg.reply('Usage : !lol [region] [summoner]');
@@ -49,7 +51,7 @@ let commands = {
             lol.setRegion(args[0]).then(() => {
                 lol.getSummonerId(args[1]).then(id => {
                     lol.getSummonerLeague(id, msg.guild.emojis).then(message => {
-                        msg.channel.sendMessage(message).catch(error => {
+                        sendEmbedMessage(msg, '', 29913, message).catch(error => {
                             logger.log('error', `Erreur LoL - ${message}`, error);
                         });
                     }).catch(reason => {
@@ -64,7 +66,8 @@ let commands = {
         }
     },
     '!ow': {
-        'description': '**!ow [region] [battle-tag]** - Affiche le classement Overwatch du joueur [battle-tag]',
+        'usage': '!ow [region] [battle-tag]',
+        'description': 'Affiche le classement Overwatch du joueur [battle-tag]',
         method: (msg, args) => {
             if (args.length < 2) {
                 msg.reply('Usage : !ow [region] [battle-tag]');
@@ -72,7 +75,7 @@ let commands = {
             }
             ow.setRegion(args[0]).then(() => {
                 ow.getProfileByBattleTag(args[1], msg.guild.emojis).then(message => {
-                    msg.channel.sendMessage(message).catch(error => {
+                    sendEmbedMessage(msg, '', 16768000, message).catch(error => {
                         logger.log('error', `Erreur OW Message - ${message}`, error);
                     });
                 }).catch(reason => {
@@ -84,7 +87,8 @@ let commands = {
         }
     },
     '!rl': {
-        'description': '**!rl [steam-id]** - Affiche le classement Rocket League du joueur [steam_id]',
+        'usage': '!rl [steam-id]',
+        'description': 'Affiche le classement Rocket League du joueur [steam_id]',
         method: (msg, args) => {
             if (args.length < 1) {
                 msg.reply('Usage : !rl [steam-id]');
@@ -100,7 +104,8 @@ let commands = {
         }
     },
     '!wow': {
-        'description': '**!wow [region] [realm] [character]** - Affiche des infos sur le personnage [character] de World of Warcraft',
+        'usage': '!wow [region] [realm] [character]',
+        'description': 'Affiche des infos sur le personnage [character] de World of Warcraft',
         method: (msg, args) => {
             if (args.length < 3) {
                 msg.reply('Usage : !wow [region] [realm] [character]');
@@ -108,11 +113,8 @@ let commands = {
             }
             wow.setRegion(args[0]).then(() => {
                 wow.getCharacterInformations(args[1], args[2], msg.guild.emojis).then(obj => {
-                    msg.channel.sendMessage(obj.message).catch(error => {
-                        logger.log('error', `Erreur WoW Message - ${obj.message}`, error);
-                    });
-                    msg.channel.sendFile(obj.thumbnail).catch(error => {
-                        logger.log('error', `Erreur WoW Fichier - ${obj.thumbnail}`, error);
+                    sendEmbedMessage(msg, '', 16728374, obj.embed, obj.thumbnail).catch(error => {
+                        logger.log('error', `Erreur WoW Message - ${obj.embed}`, error);
                     });
                 }).catch(reason => {
                     msg.reply(reason);
@@ -123,15 +125,16 @@ let commands = {
         }
     },
     '!jvc': {
-        'description': '**!jvc [type] [platform]** - Affiche les dernières infos, news et vidéos depuis JVC par platforme',
+        'usage': '!jvc [type] [platform]',
+        'description': 'Affiche les dernières infos, news et vidéos depuis JVC par platforme',
         method: (msg, args) => {
             if (args.length < 2) {
                 msg.reply('Usage : !jvc [type] [platform]');
                 return;
             }
             jvc.getNewsByTypePlatform(args[0], args[1]).then(message => {
-                msg.channel.sendMessage(message).catch(error => {
-                    logger.log('error', `Erreur JVC Message - ${message}`, error);
+                sendEmbedMessage(msg, '', 16745755, message).catch(error => {
+                    logger.log('error', `Erreur WoW Message - ${message}`, error);
                 });
             }).catch(reason => {
                 msg.reply(reason);
@@ -139,7 +142,8 @@ let commands = {
         }
     },
     '!play': {
-        'description': '**!play [youtube-url]** - Joue une musique YouTube dans le salon actuel',
+        'usage': '!play [youtube-url]',
+        'description': 'Joue une musique YouTube dans le salon actuel',
         method: (msg, args) => {
             if (args.length < 1) {
                 msg.reply('Usage : !play [youtube-url]');
@@ -155,7 +159,8 @@ let commands = {
         }
     },
     '!stop': {
-        'description': '**!stop** - Stoppe la lecture d\'une musique YouTube dans le salon actuel',
+        'usage': '!stop',
+        'description': 'Stoppe la lecture d\'une musique YouTube dans le salon actuel',
         method: (msg, args) => {
             music.stop(msg.member.voiceChannel).then(message => {
                 msg.channel.sendMessage(message).catch(error => {
@@ -167,16 +172,41 @@ let commands = {
         }
     },
     '!help': {
-        'description': '**!help** - Affiche l\'aide pour ce brave ElPuer',
+        'usage': '!help',
+        'description': 'Affiche l\'aide pour ce brave ElPuer',
         method: (msg, args) => {
-            let response = 'Liste des commandes pour ce brave El Puer :dog: : \n\n';
+            let embed = [];
             for (let command in commands) {
-                response += commands[command].description + '\n\n';
+                embed.push({
+                    'name': commands[command].usage,
+                    'value': commands[command].description
+                });
             }
-            msg.channel.sendMessage(response);
+            sendEmbedMessage(msg, 'Liste des commandes pour ce brave El Puer :dog: :', 16777215, embed).catch(error => {
+                logger.log('error', `Erreur help message`, error);
+            });
         }
     }
 };
+
+function sendEmbedMessage(msg, message, color, fields, footer = null) {
+    let rich = {
+        embed: {
+            color: color,
+            author: {
+                name: msg.author.username,
+                icon_url: msg.author.avatarURL
+            },
+            fields: fields
+        }
+    };
+    if (footer !== null) {
+        rich.footer = {
+            icon_url: footer
+        }
+    }
+    return msg.channel.sendMessage(message, rich);
+}
 
 function processMsg(msg) {
     // On ne traite pas les messages de bot
@@ -190,15 +220,13 @@ function processMsg(msg) {
     }
     // Traitement du message
     let command = msg.content.match(/^![\w+\-]+/);
-    if (command == null) {
+    if (command === null) {
         return;
     }
     let args = command['input'].split(' ').splice(1);
     if (commands.hasOwnProperty(command[0])) {
         commands[command[0]].method(msg, args);
-        return;
     }
-    msg.reply('Commande inconnue ... !help pour avoir la liste des commandes de ce brave El Puer :dog:');
 }
 
 // ERROR MANAGEMENT

@@ -12,41 +12,65 @@ module.exports = {
                 {origin: region, realm: realm.slugify(), name: character})
                 .then(response => {
                     let data = response.data;
-                    let message = `${data.name} - ${data.realm} - ${data.level} - ${races[data.race]} - ${emojis.find('name', `wow${data.class}`)} ${classes[data.class]} - ${emojis.find('name', `wow${factions[data.faction].icon}`)} ${factions[data.faction].name}`;
+                    let embed = [
+                        {
+                            'name': `${data.name} - ${data.realm}`,
+                            'value': `${data.level} - ${races[data.race]} - ${emojis.find('name', `wow${data.class}`)} ${classes[data.class]} - ${emojis.find('name', `wow${factions[data.faction].icon}`)} ${factions[data.faction].name}`
+                        }
+                    ];
                     if (typeof data.guild !== 'undefined') {
-                        message += `\nGuild : ${data.guild.name} - ${data.guild.realm} - ${data.guild.members} members`;
+                        embed.push({
+                            'name': 'Guild',
+                            'value': `${data.guild.name} - ${data.guild.realm} - ${data.guild.members} members`
+                        });
                     }
-                    message += `\n\nPrimary : `;
+                    let primary = {
+                        'name': 'Primary',
+                        'value': ''
+                    };
                     for (let p in data.professions.primary) {
                         if (data.professions.primary.hasOwnProperty(p)) {
-                            message += `${emojis.find('name', `wow${data.professions.primary[p].id}`)} ${data.professions.primary[p].name} (${data.professions.primary[p].rank}/${data.professions.primary[p].max})`;
-                            if (p != (data.professions.primary.length - 1)) {
-                                message += ` - `
+                            primary.value += `${emojis.find('name', `wow${data.professions.primary[p].id}`)} ${data.professions.primary[p].name} (${data.professions.primary[p].rank}/${data.professions.primary[p].max})`;
+                            if (p !== (data.professions.primary.length - 1)) {
+                                primary.value += ` - `
                             }
                         }
                     }
-                    message += `\nSecondary : `;
+                    embed.push(primary);
+                    let secondary = {
+                        'name': 'Secondary',
+                        'value': ''
+                    };
                     for (let p in data.professions.secondary) {
                         if (data.professions.secondary.hasOwnProperty(p)) {
-                            message += `${emojis.find('name', `wow${data.professions.secondary[p].id}`)} ${data.professions.secondary[p].name} (${data.professions.secondary[p].rank}/${data.professions.secondary[p].max})`;
-                            if (p != (data.professions.secondary.length - 1)) {
-                                message += ` - `
+                            secondary.value += `${emojis.find('name', `wow${data.professions.secondary[p].id}`)} ${data.professions.secondary[p].name} (${data.professions.secondary[p].rank}/${data.professions.secondary[p].max})`;
+                            if (p !== (data.professions.secondary.length - 1)) {
+                                secondary.value += ` - `
                             }
                         }
                     }
-                    message += `\n\nItem level max : ${data.items.averageItemLevel} - Item level equipped : ${data.items.averageItemLevelEquipped}\n`;
+                    embed.push(secondary);
+                    embed.push({
+                        'name': 'Item level',
+                        'value': `Max : ${data.items.averageItemLevel} - Equipped : ${data.items.averageItemLevelEquipped}\n`
+                    });
+                    let item = {
+                        'name': 'Raids',
+                        'value': ''
+                    };
                     let raids = data.progression.raids.slice(-3);
                     for (let r in raids) {
                         if (raids.hasOwnProperty(r)) {
-                            message += `\n${raids[r].name} - ${calculProgress(raids[r].bosses)}`;
+                            item.value += `${raids[r].name} - ${calculProgress(raids[r].bosses)}\n`;
                         }
                     }
+                    embed.push(item);
                     resolve({
-                        'message': message,
+                        'embed': embed,
                         'thumbnail': `https://render-${region}.worldofwarcraft.com/character/${data.thumbnail}`
                     });
                 }).catch(response => {
-                if (response.response.status == 404) {
+                if (response.status === 404) {
                     reject('Royaume ou personnage introuvable ...');
                 } else {
                     reject('Le service est indisponible pour le moment ...');

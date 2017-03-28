@@ -9,7 +9,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             https.get(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${encodeURI(name)}?api_key=${key}`, res => {
                 let data = '';
-                if (res.statusCode == 200) {
+                if (res.statusCode === 200) {
                     res.on('data', d => {
                         data += d;
                     });
@@ -17,7 +17,7 @@ module.exports = {
                         resolve(JSON.parse(data)[name.toLowerCase()]['id']);
                     });
                 } else {
-                    if (res.statusCode == 404) {
+                    if (res.statusCode === 404) {
                         reject('Ce joueur n\'existe pas ...');
                     } else {
                         reject('Le service est indisponible pour le moment ...');
@@ -30,37 +30,40 @@ module.exports = {
         return new Promise((resolve, reject) => {
             https.get(`https://${region}.api.pvp.net/api/lol/${region}/v2.5/league/by-summoner/${id}/entry?api_key=${key}`, res => {
                 let data = '';
-                if (res.statusCode == 200) {
+                if (res.statusCode === 200) {
                     res.on('data', d => {
                         data += d;
                     });
                     res.on('end', () => {
                         let leagues = JSON.parse(data)[id];
-                        let message = '';
+                        let embed = [];
                         for (let l in leagues) {
                             if (leagues.hasOwnProperty(l)) {
                                 let league = leagues[l];
-                                message += `${emojis.find('name', tiers[league.tier])} - ${modes[league.queue]} - ${league.name} - ${league.tier.cFL()} `;
-                                message += `${divisions[league.entries[0].division]} - ${league.entries[0].leaguePoints}pts\n`;
-                                message += `Wins : ${league.entries[0].wins} - Losses : ${league.entries[0].losses} - `;
-                                message += `Rate : ${((league.entries[0].wins / (league.entries[0].wins + league.entries[0].losses)) * 100).toFixed(2)}%`;
-                                message += league.entries[0].isFreshBlood ? ' :baby: ' : '';
-                                message += league.entries[0].isVeteran ? ' :older_man: ' : '';
-                                message += league.entries[0].isHotStreak ? ' :fire: ' : '';
-                                message += league.entries[0].isInactive ? ':zzz: ' : '';
+                                let item = {};
+                                item.name = `${modes[league.queue]} - ${league.name}`;
+                                item.value = `${emojis.find('name', tiers[league.tier])} - ${league.tier.cFL()} `;
+                                item.value += `${divisions[league.entries[0].division]} - ${league.entries[0].leaguePoints}pts\n`;
+                                item.value += `Wins : ${league.entries[0].wins} - Losses : ${league.entries[0].losses} - `;
+                                item.value += `Rate : ${((league.entries[0].wins / (league.entries[0].wins + league.entries[0].losses)) * 100).toFixed(2)}%`;
+                                item.value += league.entries[0].isFreshBlood ? ' :baby: ' : '';
+                                item.value += league.entries[0].isVeteran ? ' :older_man: ' : '';
+                                item.value += league.entries[0].isHotStreak ? ' :fire: ' : '';
+                                item.value += league.entries[0].isInactive ? ':zzz: ' : '';
                                 if (typeof league.entries[0].miniSeries !== 'undefined') {
-                                    message += `\nBO : ${league.entries[0].miniSeries.progress
+                                    item.value += `\nBO : ${league.entries[0].miniSeries.progress
                                         .replaceAll('L', ' :heavy_multiplication_x:')
                                         .replaceAll('W', ' :heavy_check_mark:')
                                         .replaceAll('N', ' :heavy_minus_sign:')}`;
                                 }
-                                message += '\n';
+                                item.value += '\n';
+                                embed.push(item);
                             }
                         }
-                        resolve(message);
+                        resolve(embed);
                     });
                 } else {
-                    if (res.statusCode == 404) {
+                    if (res.statusCode === 404) {
                         reject('Ce joueur n\'existe pas ou n\'est pas encore classé ...');
                     } else {
                         reject('Le service est indisponible pour le moment ...');
