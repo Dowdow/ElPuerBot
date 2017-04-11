@@ -2,10 +2,9 @@ const https = require('https');
 
 let baseUrl = 'https://api.lootbox.eu';
 let regions = ['eu', 'us', 'kr', 'cn', 'global'];
-let region = '';
 
 module.exports = {
-    getProfileByBattleTag: (battletag, emojis) => {
+    getProfileByBattleTag: (region, battletag, emojis) => {
         return new Promise((resolve, reject) => {
             https.get(`${baseUrl}/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}/profile`, res => {
                 let data = '';
@@ -47,6 +46,8 @@ module.exports = {
                         reject('Ce Battle Tag n\'existe pas ...');
                     }
                 });
+            }).on('error', () => {
+                reject('Le service est indisponible pour le moment ...')
             });
         });
     },
@@ -55,8 +56,7 @@ module.exports = {
             if (regions.find(element => {
                     return element === r;
                 })) {
-                region = r;
-                resolve();
+                resolve(r);
             } else {
                 reject(`Cette région n'existe pas ...\nRégions disponibles : ${regions.join(', ')}`);
             }

@@ -3,10 +3,9 @@ const blizzard = require('blizzard.js').initialize({
 });
 
 let regions = ['us', 'eu', 'sea', 'kr', 'tw', 'cn'];
-let region = '';
 
 module.exports = {
-    getCharacterInformations: (realm, character, emojis) => {
+    getCharacterInformations: (region, realm, character, emojis) => {
         return new Promise((resolve, reject) => {
             blizzard.wow.character(['profile', 'guild', 'professions', 'progression', 'items'],
                 {origin: region, realm: realm.slugify(), name: character})
@@ -83,8 +82,7 @@ module.exports = {
             if (regions.find(element => {
                     return element === r;
                 })) {
-                region = r;
-                resolve();
+                resolve(r);
             } else {
                 reject(`Cette région n'existe pas ...\nRégions disponibles : ${regions.join(', ')}`);
             }

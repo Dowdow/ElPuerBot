@@ -7,7 +7,7 @@ module.exports = {
     getPlayerRanks: steamid => {
         return new Promise((resolve, reject) => {
             rlsclient.getPlayer(steamid, rls.platforms.STEAM, (status, data) => {
-                if (status == 200) {
+                if (status === 200) {
                     console.log(data);
                 } else {
                     reject('Le service Rocket League Stats est inaccessible pour l\'instant ...');

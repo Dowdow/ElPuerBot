@@ -36,7 +36,7 @@ let commands = {
     '!el-puer': {
         'usage': '!el-puer',
         'description': 'Appelle ce brave El Puer',
-        method: (msg, args) => {
+        method: (msg) => {
             msg.channel.sendMessage('Je suis El Puer, fidèle et brave animal ! :dog:');
         }
     },
@@ -48,9 +48,9 @@ let commands = {
                 msg.reply('Usage : !lol [region] [summoner]');
                 return;
             }
-            lol.setRegion(args[0]).then(() => {
-                lol.getSummonerId(args[1]).then(id => {
-                    lol.getSummonerLeague(id, msg.guild.emojis).then(message => {
+            lol.setRegion(args[0]).then((region) => {
+                lol.getSummonerId(region, args[1]).then(id => {
+                    lol.getSummonerLeague(region, id, msg.guild.emojis).then(message => {
                         sendEmbedMessage(msg, '', 29913, message).catch(error => {
                             logger.log('error', `Erreur LoL - ${message}`, error);
                         });
@@ -73,8 +73,8 @@ let commands = {
                 msg.reply('Usage : !ow [region] [battle-tag]');
                 return;
             }
-            ow.setRegion(args[0]).then(() => {
-                ow.getProfileByBattleTag(args[1], msg.guild.emojis).then(message => {
+            ow.setRegion(args[0]).then((region) => {
+                ow.getProfileByBattleTag(region, args[1], msg.guild.emojis).then(message => {
                     sendEmbedMessage(msg, '', 16768000, message).catch(error => {
                         logger.log('error', `Erreur OW Message - ${message}`, error);
                     });
@@ -111,8 +111,8 @@ let commands = {
                 msg.reply('Usage : !wow [region] [realm] [character]');
                 return;
             }
-            wow.setRegion(args[0]).then(() => {
-                wow.getCharacterInformations(args[1], args[2], msg.guild.emojis).then(obj => {
+            wow.setRegion(args[0]).then((region) => {
+                wow.getCharacterInformations(region, args[1], args[2], msg.guild.emojis).then(obj => {
                     sendEmbedMessage(msg, '', 16728374, obj.embed, obj.thumbnail).catch(error => {
                         logger.log('error', `Erreur WoW Message - ${obj.embed}`, error);
                     });
@@ -161,7 +161,7 @@ let commands = {
     '!stop': {
         'usage': '!stop',
         'description': 'Stoppe la lecture d\'une musique YouTube dans le salon actuel',
-        method: (msg, args) => {
+        method: (msg) => {
             music.stop(msg.member.voiceChannel).then(message => {
                 msg.channel.sendMessage(message).catch(error => {
                     logger.log('error', `Erreur Stop Message - ${message}`, error);
@@ -174,7 +174,7 @@ let commands = {
     '!help': {
         'usage': '!help',
         'description': 'Affiche l\'aide pour ce brave ElPuer',
-        method: (msg, args) => {
+        method: (msg) => {
             let embed = [];
             for (let command in commands) {
                 embed.push({

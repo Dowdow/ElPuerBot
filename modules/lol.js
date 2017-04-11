@@ -1,11 +1,10 @@
 const https = require('https');
 
 let regions = ['br', 'eune', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'pbe'];
-let region = '';
 let key = process.env.RIOT_KEY;
 
 module.exports = {
-    getSummonerId: name => {
+    getSummonerId: (region, name) => {
         return new Promise((resolve, reject) => {
             https.get(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${encodeURI(name)}?api_key=${key}`, res => {
                 let data = '';
@@ -23,10 +22,12 @@ module.exports = {
                         reject('Le service est indisponible pour le moment ...');
                     }
                 }
+            }).on('error', () => {
+                reject('Le service est indisponible pour le moment ...');
             });
         });
     },
-    getSummonerLeague: (id, emojis) => {
+    getSummonerLeague: (region, id, emojis) => {
         return new Promise((resolve, reject) => {
             https.get(`https://${region}.api.pvp.net/api/lol/${region}/v2.5/league/by-summoner/${id}/entry?api_key=${key}`, res => {
                 let data = '';
@@ -69,6 +70,8 @@ module.exports = {
                         reject('Le service est indisponible pour le moment ...');
                     }
                 }
+            }).on('error', () => {
+                reject('Le service est indisponible pour le moment ...');
             });
         });
     },
@@ -77,8 +80,7 @@ module.exports = {
             if (regions.find(element => {
                     return element === r;
                 })) {
-                region = r;
-                resolve();
+                resolve(r);
             } else {
                 reject(`Cette région n'existe pas ...\nRégions disponibles : ${regions.join(', ')}`);
             }
