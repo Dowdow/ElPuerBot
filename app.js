@@ -7,6 +7,7 @@ const wow = require('./modules/wow');
 const rl = require('./modules/rl');
 const jvc = require('./modules/jvc');
 const music = require('./modules/music');
+const ask = require('./modules/ask');
 
 // DISCORD EVENTS
 const client = new Discord.Client();
@@ -49,7 +50,7 @@ let commands = {
                 return;
             }
             lol.setRegion(args[0]).then((region) => {
-                lol.getSummonerId(region, args[1]).then(id => {
+                lol.getSummonerId(region, args.slice(1).join(' ')).then(id => {
                     lol.getSummonerLeague(region, id, msg.guild.emojis).then(message => {
                         sendEmbedMessage(msg, '', 29913, message).catch(error => {
                             logger.log('error', `Erreur LoL - ${message}`, error);
@@ -74,7 +75,7 @@ let commands = {
                 return;
             }
             ow.setRegion(args[0]).then((region) => {
-                ow.getProfileByBattleTag(region, args[1], msg.guild.emojis).then(message => {
+                ow.getProfileByBattleTag(region, args.slice(1).join(' '), msg.guild.emojis).then(message => {
                     sendEmbedMessage(msg, '', 16768000, message).catch(error => {
                         logger.log('error', `Erreur OW Message - ${message}`, error);
                     });
@@ -94,7 +95,7 @@ let commands = {
                 msg.reply('Usage : !rl [steam-id]');
                 return;
             }
-            rl.getPlayerRanks(args[0]).then(message => {
+            rl.getPlayerRanks(args.join(' ')).then(message => {
                 msg.channel.sendMessage(message).catch(error => {
                     logger.log('error', `Erreur RL Message - ${message}`, error);
                 });
@@ -211,11 +212,11 @@ function sendEmbedMessage(msg, message, color, fields, footer = null) {
 function processMsg(msg) {
     // On ne traite pas les messages de bot
     if (msg.author.bot) return;
-    // Si l'utilisateur a le rôle mongolien
-    if (msg.member._roles.find(element => {
-            return element === '182943519697141761';
-        })) {
-        msg.reply('Ta gueule sous race :middle_finger:');
+    // On gère les questions
+    if (msg.content.startsWith('<@248533866778722305>') && msg.content.substring(msg.content.length - 1) === '?') {
+        msg.reply(ask.ask()).catch(error => {
+            logger.log('error', `Erreur ask message`, error);
+        });
         return;
     }
     // Traitement du message
