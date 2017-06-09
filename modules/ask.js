@@ -1,6 +1,6 @@
 module.exports = {
     ask: () => {
-        return responses[Math.floor((Math.random() * responses.length - 1))];
+        return responses[Math.floor((Math.random() * responses.length))];
     }
 };
 
