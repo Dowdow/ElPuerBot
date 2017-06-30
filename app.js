@@ -22,6 +22,7 @@ client.on('message', msg => {
 
 client.on('disconnect', () => {
     logger.log('info', `Disconnected`);
+    client.login(process.env.EL_PUER_TOKEN);
 });
 
 // LOG CONFIGURATION
@@ -38,7 +39,7 @@ let commands = {
         'usage': '!el-puer',
         'description': 'Appelle ce brave El Puer',
         method: (msg) => {
-            msg.channel.sendMessage('Je suis El Puer, fidèle et brave animal ! :dog:');
+            msg.channel.send('Je suis El Puer, fidèle et brave animal ! :dog:');
         }
     },
     '!lol': {
@@ -96,7 +97,7 @@ let commands = {
                 return;
             }
             rl.getPlayerRanks(args.join(' ')).then(message => {
-                msg.channel.sendMessage(message).catch(error => {
+                msg.channel.send(message).catch(error => {
                     logger.log('error', `Erreur RL Message - ${message}`, error);
                 });
             }).catch(reason => {
@@ -151,7 +152,7 @@ let commands = {
                 return;
             }
             music.play(msg.member.voiceChannel, args[0]).then(message => {
-                msg.channel.sendMessage(message).catch(error => {
+                msg.channel.send(message).catch(error => {
                     logger.log('error', `Erreur Play Message - ${message}`, error);
                 });
             }).catch(reason => {
@@ -164,7 +165,7 @@ let commands = {
         'description': 'Stoppe la lecture d\'une musique YouTube dans le salon actuel',
         method: (msg) => {
             music.stop(msg.member.voiceChannel).then(message => {
-                msg.channel.sendMessage(message).catch(error => {
+                msg.channel.send(message).catch(error => {
                     logger.log('error', `Erreur Stop Message - ${message}`, error);
                 });
             }).catch(reason => {
@@ -206,7 +207,7 @@ function sendEmbedMessage(msg, message, color, fields, footer = null) {
             icon_url: footer
         }
     }
-    return msg.channel.sendMessage(message, rich);
+    return msg.channel.send(message, rich);
 }
 
 function processMsg(msg) {

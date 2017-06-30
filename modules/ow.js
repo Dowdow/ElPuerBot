@@ -1,20 +1,19 @@
 const https = require('https');
 
-let baseUrl = 'https://api.lootbox.eu';
+let baseUrl = 'https://ow-api.herokuapp.com';
 let regions = ['eu', 'us', 'kr', 'cn', 'global'];
 
 module.exports = {
     getProfileByBattleTag: (region, battletag, emojis) => {
         return new Promise((resolve, reject) => {
-            https.get(`${baseUrl}/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}/profile`, res => {
+            https.get(`${baseUrl}/profile/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}`, res => {
                 let data = '';
                 res.on('data', d => {
                     data += d;
                 });
                 res.on('end', () => {
-                    data = JSON.parse(data);
-                    if (typeof data.statusCode === 'undefined') {
-                        let info = data.data;
+                    let info = JSON.parse(data);
+                    if (typeof data.statusCode === typeof undefined) {
                         let embed = [
                             {
                                 'name': info.username,
@@ -22,10 +21,10 @@ module.exports = {
                             }
                         ];
 
-                        if (Object.keys(info.games.quick).length !== 0 && info.games.quick.constructor === Object) {
+                        if (Object.keys(info.games.quickplay).length !== 0 && info.games.quickplay.constructor === Object) {
                             embed.push({
                                 'name': 'Quick',
-                                'value': `${info.games.quick.wins} wins - ${info.playtime.quick}`
+                                'value': `${info.games.quickplay.won} wins - ${info.playtime.quickplay}`
                             });
                         }
                         if (Object.keys(info.games.competitive).length !== 0 && info.games.competitive.constructor === Object) {
@@ -37,8 +36,10 @@ module.exports = {
                                 item.value = `${info.competitive.rank} pts - ${emojis.find('name', rankToEmoji(info.competitive.rank_img))}`;
                             }
                             item.value += ` - ${info.playtime.competitive} - `;
-                            item.value += `Wins : ${info.games.competitive.wins} - Losses + Draws : ${info.games.competitive.lost} - `;
-                            item.value += `Rate : ${((info.games.competitive.wins / info.games.competitive.played) * 100).toFixed(2)}%`;
+                            item.value += `Wins : ${info.games.competitive.won === null ? 0 : info.games.competitive.won} - `;
+                            item.value += `Losses : ${info.games.competitive.lost === null ? 0 : info.games.competitive.lost} - `;
+                            item.value += `Draws : ${info.games.competitive.draw === null ? 0 : info.games.competitive.draw} - `;
+                            item.value += `Rate : ${(((info.games.competitive.won === null ? 0 : info.games.competitive.won) / info.games.competitive.played) * 100).toFixed(2)}%`;
                             embed.push(item);
                         }
                         resolve(embed);
