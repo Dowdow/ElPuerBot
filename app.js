@@ -22,7 +22,11 @@ client.on('message', msg => {
 
 client.on('disconnect', () => {
     logger.log('info', `Disconnected`);
-    client.login(process.env.EL_PUER_TOKEN);
+    client.login(process.env.EL_PUER_TOKEN).then(() => {
+        logger.log('info', 'Reconnection ...');
+    }).catch(() => {
+        logger.log('error', 'Error while reconnecting');
+    });
 });
 
 // LOG CONFIGURATION
