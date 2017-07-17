@@ -7,7 +7,7 @@ A peasant bot for Discord
 |-------|-----------|
 |!lol [region] [summoner]|Shows League of Legends player ranked stats.
 |!ow [region] [battle-tag]|Shows Overwatch player normal and ranked stats.
-|!rl [steam-id]|Still under developpement - Shows Rocket League player ranked stats.
+|!rl [steam-id]|Shows Rocket League player ranked stats.
 |!wow [region] [realm] [character]|Shows World of Warcraft character informations, professions, item level and last 3 raids progression.
 |!jvc [type] [platform]|Shows last news from jeuxvideo.com
 |!play [youtube-url]|Plays audio from a YouTube video in a vocal channel
@@ -34,7 +34,7 @@ Run da bot
 ```
 node app.js
 ```
-Or if you're not a trash
+Or
 ```
 pm2 start app.js
 ```
