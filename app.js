@@ -93,20 +93,37 @@ let commands = {
         }
     },
     '!rl': {
-        'usage': '!rl [steam-id]',
-        'description': 'Affiche le classement Rocket League du joueur [steam_id]',
+        'usage': '!rl [type](search|stats) [id](steam_id|name)',
+        'description': 'Affiche le classement Rocket League du joueur [id](steam_id|name)',
         method: (msg, args) => {
-            if (args.length < 1) {
-                msg.reply('Usage : !rl [steam-id]');
+            if (args.length < 2) {
+                msg.reply('Usage : !rl [type](search|stats) [id](steam_id|name)');
                 return;
             }
-            rl.getPlayerRanks(args.join(' ')).then(message => {
-                msg.channel.send(message).catch(error => {
-                    logger.log('error', `Erreur RL Message - ${message}`, error);
-                });
-            }).catch(reason => {
-                msg.reply(reason);
-            });
+            let id = args.slice(1).join(' ');
+            switch (args[0]) {
+                case 'search':
+                    rl.searchPlayer(id).then(message => {
+                        sendEmbedMessage(msg, '', 3066944, message).catch(error => {
+                            logger.log('error', `Erreur RL Message Search - ${message}`, error);
+                        });
+                    }).catch(reason => {
+                        msg.reply(reason);
+                    });
+                    break;
+                case 'stats':
+                    rl.getPlayerRanks(id).then(obj => {
+                        sendEmbedMessage(msg, '', 3066944, obj.embed, obj.thumbnail).catch(error => {
+                            logger.log('error', `Erreur RL Message Stats - ${message}`, error);
+                        });
+                    }).catch(reason => {
+                        msg.reply(reason);
+                    });
+                    break;
+                default:
+                    msg.reply('Le type doit être "search" ou "stats"');
+                    break;
+            }
         }
     },
     '!wow': {

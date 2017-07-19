@@ -48,8 +48,8 @@ module.exports = {
                     }
                 });
             }).on('error', () => {
-                reject('Le service est indisponible pour le moment ...')
-            });
+                reject('Le service est indisponible pour le moment ...');
+            }).end();
         });
     },
     setRegion: (r) => {
