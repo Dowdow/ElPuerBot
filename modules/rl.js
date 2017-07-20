@@ -76,7 +76,7 @@ module.exports = {
                             let queue = season[q];
                             embed.push({
                                 'name': getQueue(q),
-                                'value': `Tier : ${getTier(queue.tier)} - Division : ${queue.division} - Played : ${queue.matchesPlayed} - MMR : ${queue.rankPoints}`
+                                'value': `Tier : ${getTier(queue.tier)} - Division : ${queue.division + 1} - Played : ${queue.matchesPlayed} - MMR : ${queue.rankPoints}`
                             })
                         }
                     }
