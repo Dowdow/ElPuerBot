@@ -109,7 +109,7 @@ function getQueue(queue) {
             return '1v1';
         case '11':
             return '2v2';
-        case'12':
+        case '12':
             return '3v3 solo';
         case '13':
             return '3v3 standard';

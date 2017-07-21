@@ -5,6 +5,7 @@ const lol = require('./modules/lol');
 const ow = require('./modules/ow');
 const wow = require('./modules/wow');
 const rl = require('./modules/rl');
+const pubg = require('./modules/pubg');
 const jvc = require('./modules/jvc');
 const music = require('./modules/music');
 const ask = require('./modules/ask');
@@ -93,11 +94,11 @@ let commands = {
         }
     },
     '!rl': {
-        'usage': '!rl [type](search|stats) [id](steam_id|name)',
-        'description': 'Affiche le classement Rocket League du joueur [id](steam_id|name)',
+        'usage': '!rl [search|stats] [name|steam_id]',
+        'description': 'Affiche le classement Rocket League du joueur [name|steam_id]',
         method: (msg, args) => {
             if (args.length < 2) {
-                msg.reply('Usage : !rl [type](search|stats) [id](steam_id|name)');
+                msg.reply('Usage : !rl [search|stats] [name|steam_id]');
                 return;
             }
             let id = args.slice(1).join(' ');
@@ -141,6 +142,23 @@ let commands = {
                     });
                 }).catch(reason => {
                     msg.reply(reason);
+                });
+            }).catch(reason => {
+                msg.reply(reason);
+            });
+        }
+    },
+    '!pubg': {
+        'usage': '!pubg [type] [name]',
+        'description': 'Affiche le classement Playerunknown\'s Battlegrounds du joueur [name]',
+        method: (msg, args) => {
+            if (args.length < 2) {
+                msg.reply('Usage : !pubg [type] [name]');
+                return;
+            }
+            pubg.getByNickname(args[0], args.slice(1).join(' ')).then(message => {
+                sendEmbedMessage(msg, '', 1118481, message).catch(error => {
+                    logger.log('error', `Erreur PUBG Message - ${message}`, error);
                 });
             }).catch(reason => {
                 msg.reply(reason);
