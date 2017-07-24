@@ -26,7 +26,7 @@ module.exports = {
                 });
                 res.on('end', () => {
                     data = JSON.parse(data);
-                    if (typeof data.PlayerName === typeof undefined) {
+                    if (typeof data.error !== typeof undefined) {
                         return reject('Votre personnage n\'existe pas ou est indisponible à la recherche pour l\'instant ...');
                     }
                     let embed = [
@@ -54,10 +54,10 @@ module.exports = {
                                         }
                                         categories[categ.category].value += `${categ.label} : ${categ.value}`;
                                         if (typeof categ.rank !== typeof undefined && categ.rank !== null) {
-                                            categories[categ.category].value += ` - Rank : ${categ.rank}`;
+                                            categories[categ.category].value += ` - :military_medal: ${categ.rank}`;
                                         }
                                         if (typeof categ.percentile !== typeof undefined && categ.percentile !== null) {
-                                            categories[categ.category].value += ` - Top : ${categ.percentile}%`;
+                                            categories[categ.category].value += ` - :trophy: ${categ.percentile}%`;
                                         }
                                         categories[categ.category].value += '\n';
                                     }

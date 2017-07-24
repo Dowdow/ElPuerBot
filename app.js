@@ -113,7 +113,7 @@ let commands = {
                     });
                     break;
                 case 'stats':
-                    rl.getPlayerRanks(id).then(obj => {
+                    rl.getPlayerRanks(id, msg.guild.emojis).then(obj => {
                         sendEmbedMessage(msg, '', 3066944, obj.embed, obj.thumbnail).catch(error => {
                             logger.log('error', `Erreur RL Message Stats - ${message}`, error);
                         });

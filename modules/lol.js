@@ -138,7 +138,7 @@ let tiers = {
     'BRONZE': 'lol1',
     'SILVER': 'lol2',
     'GOLD': 'lol3',
-    'PLATINIUM': 'lol4',
+    'PLATINUM': 'lol4',
     'DIAMOND': 'lol5',
     'MASTER': 'lol6',
     'CHALLENGER': 'lol7',

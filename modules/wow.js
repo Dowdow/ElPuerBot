@@ -29,10 +29,7 @@ module.exports = {
                     };
                     for (let p in data.professions.primary) {
                         if (data.professions.primary.hasOwnProperty(p)) {
-                            primary.value += `${emojis.find('name', `wow${data.professions.primary[p].id}`)} ${data.professions.primary[p].name} (${data.professions.primary[p].rank}/${data.professions.primary[p].max})`;
-                            if (p !== (data.professions.primary.length - 1)) {
-                                primary.value += ` - `
-                            }
+                            primary.value += `${data.professions.primary[p].name} (${data.professions.primary[p].rank}/${data.professions.primary[p].max})\n`;
                         }
                     }
                     embed.push(primary);
@@ -42,10 +39,7 @@ module.exports = {
                     };
                     for (let p in data.professions.secondary) {
                         if (data.professions.secondary.hasOwnProperty(p)) {
-                            secondary.value += `${emojis.find('name', `wow${data.professions.secondary[p].id}`)} ${data.professions.secondary[p].name} (${data.professions.secondary[p].rank}/${data.professions.secondary[p].max})`;
-                            if (p !== (data.professions.secondary.length - 1)) {
-                                secondary.value += ` - `
-                            }
+                            secondary.value += `${data.professions.secondary[p].name} (${data.professions.secondary[p].rank}/${data.professions.secondary[p].max})\n`;
                         }
                     }
                     embed.push(secondary);

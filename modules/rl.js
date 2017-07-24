@@ -38,7 +38,7 @@ module.exports = {
             }).end();
         });
     },
-    getPlayerRanks: steamid => {
+    getPlayerRanks: (steamid, emojis) => {
         return new Promise((resolve, reject) => {
             const options = createOptions(playerPath + '?unique_id=' + encodeURIComponent(steamid) + '&platform_id=1');
             https.request(options, res => {
@@ -76,7 +76,7 @@ module.exports = {
                             let queue = season[q];
                             embed.push({
                                 'name': getQueue(q),
-                                'value': `Tier : ${getTier(queue.tier)} - Division : ${queue.division + 1} - Played : ${queue.matchesPlayed} - MMR : ${queue.rankPoints}`
+                                'value': `Tier : ${emojis.find('name', `rl${queue.tier}`)} ${getTier(queue.tier)} - Division : ${queue.division + 1} - Played : ${queue.matchesPlayed} - MMR : ${queue.rankPoints}`
                             })
                         }
                     }
