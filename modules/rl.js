@@ -55,7 +55,7 @@ module.exports = {
                         },
                         {
                             'name': 'Stats',
-                            'value': `Wins : ${data.stats.wins} - Goals : ${data.stats.goals} - Mvps : ${data.stats.mvps} - Saves : ${data.stats.saves} - Shots : ${data.stats.shots} - Assists : ${data.stats.assists}`
+                            'value': `:military_medal: Wins : ${data.stats.wins}\n:soccer: Goals : ${data.stats.goals}\n:first_place: Mvps : ${data.stats.mvps}\n:goal: Saves : ${data.stats.saves}\n:gun: Shots : ${data.stats.shots}\n:handshake: Assists : ${data.stats.assists}`
                         }
                     ];
                     let season = 0;
