@@ -1,19 +1,17 @@
 const https = require('https');
-
-let regions = ['br', 'eune', 'euw', 'jp', 'kr', 'lan', 'las', 'na', 'oce', 'tr', 'ru', 'pbe'];
-let key = process.env.RIOT_KEY;
+const key = process.env.RIOT_KEY;
 
 module.exports = {
     getSummonerId: (region, name) => {
         return new Promise((resolve, reject) => {
-            https.get(`https://${region}.api.pvp.net/api/lol/${region}/v1.4/summoner/by-name/${encodeURI(name)}?api_key=${key}`, res => {
+            https.get(`https://${region.endpoint}/lol/summoner/v3/summoners/by-name/${encodeURI(name)}?api_key=${key}`, res => {
                 let data = '';
                 if (res.statusCode === 200) {
                     res.on('data', d => {
                         data += d;
                     });
                     res.on('end', () => {
-                        resolve(JSON.parse(data)[name.toLowerCase()]['id']);
+                        resolve(JSON.parse(data).id);
                     });
                 } else {
                     if (res.statusCode === 404) {
@@ -29,30 +27,31 @@ module.exports = {
     },
     getSummonerLeague: (region, id, emojis) => {
         return new Promise((resolve, reject) => {
-            https.get(`https://${region}.api.pvp.net/api/lol/${region}/v2.5/league/by-summoner/${id}/entry?api_key=${key}`, res => {
+            https.get(`https://${region.endpoint}/lol/league/v3/leagues/by-summoner/${id}?api_key=${key}`, res => {
                 let data = '';
                 if (res.statusCode === 200) {
                     res.on('data', d => {
                         data += d;
                     });
                     res.on('end', () => {
-                        let leagues = JSON.parse(data)[id];
+                        let leagues = JSON.parse(data);
                         let embed = [];
                         for (let l in leagues) {
                             if (leagues.hasOwnProperty(l)) {
                                 let league = leagues[l];
+                                let entry = league.entries[0];
                                 let item = {};
                                 item.name = `${modes[league.queue]} - ${league.name}`;
                                 item.value = `${emojis.find('name', tiers[league.tier])} - ${league.tier.cFL()} `;
-                                item.value += `${divisions[league.entries[0].division]} - ${league.entries[0].leaguePoints}pts\n`;
-                                item.value += `Wins : ${league.entries[0].wins} - Losses : ${league.entries[0].losses} - `;
-                                item.value += `Rate : ${((league.entries[0].wins / (league.entries[0].wins + league.entries[0].losses)) * 100).toFixed(2)}%`;
-                                item.value += league.entries[0].isFreshBlood ? ' :baby: ' : '';
-                                item.value += league.entries[0].isVeteran ? ' :older_man: ' : '';
-                                item.value += league.entries[0].isHotStreak ? ' :fire: ' : '';
-                                item.value += league.entries[0].isInactive ? ':zzz: ' : '';
-                                if (typeof league.entries[0].miniSeries !== 'undefined') {
-                                    item.value += `\nBO : ${league.entries[0].miniSeries.progress
+                                item.value += `${entry.rank} - ${entry.leaguePoints}pts\n`;
+                                item.value += `Wins : ${entry.wins} - Losses : ${entry.losses} - `;
+                                item.value += `Rate : ${((entry.wins / (entry.wins + entry.losses)) * 100).toFixed(2)}%`;
+                                item.value += entry.freshBlood ? ' :baby: ' : '';
+                                item.value += entry.veteran ? ' :older_man: ' : '';
+                                item.value += entry.hotStreak ? ' :fire: ' : '';
+                                item.value += entry.inactive ? ':zzz: ' : '';
+                                if (typeof entry.miniSeries !== typeof undefined) {
+                                    item.value += `\nBO : ${entry.miniSeries.progress
                                         .replaceAll('L', ' :heavy_multiplication_x:')
                                         .replaceAll('W', ' :heavy_check_mark:')
                                         .replaceAll('N', ' :heavy_minus_sign:')}`;
@@ -75,18 +74,36 @@ module.exports = {
             });
         });
     },
-    setRegion: (r) => {
+    setRegion: (region) => {
         return new Promise((resolve, reject) => {
-            if (regions.find(element => {
-                    return element === r;
-                })) {
-                resolve(r);
-            } else {
-                reject(`Cette région n'existe pas ...\nRégions disponibles : ${regions.join(', ')}`);
+            for (let r in regions) {
+                if (regions.hasOwnProperty(r)) {
+                    if (regions[r].name === region) {
+                        resolve(regions[r]);
+                    }
+                }
             }
+            reject(`Cette région n'existe pas ...\nRégions disponibles : ${regions.map(elem => {
+                return elem.name;
+            }).join(', ')}`);
         });
     }
 };
+
+let regions = [
+    {'name': 'br', 'endpoint': 'br1.api.riotgames.com'},
+    {'name': 'eune', 'endpoint': 'eun1.api.riotgames.com'},
+    {'name': 'euw', 'endpoint': 'euw1.api.riotgames.com'},
+    {'name': 'jp', 'endpoint': 'jp1.api.riotgames.com'},
+    {'name': 'kr', 'endpoint': 'kr.api.riotgames.com'},
+    {'name': 'lan', 'endpoint': 'la1.api.riotgames.com'},
+    {'name': 'las', 'endpoint': 'la2.api.riotgames.com'},
+    {'name': 'na', 'endpoint': 'na1.api.riotgames.com'},
+    {'name': 'oce', 'endpoint': 'oc1.api.riotgames.com'},
+    {'name': 'tr', 'endpoint': 'tr1.api.riotgames.com'},
+    {'name': 'ru', 'endpoint': 'ru.api.riotgames.com'},
+    {'name': 'pbe', 'endpoint': 'pbe1.api.riotgames.com'}
+];
 
 let modes = {
     'CUSTOM': 'Custom',
@@ -142,14 +159,6 @@ let tiers = {
     'DIAMOND': 'lol5',
     'MASTER': 'lol6',
     'CHALLENGER': 'lol7',
-};
-
-let divisions = {
-    'I': '1',
-    'II': '2',
-    'III': '3',
-    'IV': '4',
-    'V': '5'
 };
 
 String.prototype.cFL = function () {
