@@ -41,7 +41,7 @@ module.exports = {
                             if (type !== 'all' && type !== stat.Match) {
                                 continue;
                             }
-                            if (data.selectedRegion === stat.Region) {
+                            if (data.selectedRegion === stat.Region && stat.Season === data.defaultSeason) {
                                 let categories = {};
                                 for (let c in stat.Stats) {
                                     if (stat.Stats.hasOwnProperty(c)) {

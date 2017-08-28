@@ -15,7 +15,7 @@
     "dotenv": "^2.0.0",
     "node-opus": "^0.2.6",
     "rls-api": "^1.0.2",
-    "rss-parser": "^2.10.1",
+    "rss-parser": "^2.10.3",
     "winston": "^2.3.1",
     "ytdl-core": "^0.7.24"
   }
