@@ -5,6 +5,7 @@ A peasant bot for Discord
 
 |Command|Description|
 |-------|-----------|
+|!pubg [mode] [user]|Shows PUBG stats.
 |!lol [region] [summoner]|Shows League of Legends player ranked stats.
 |!ow [region] [battle-tag]|Shows Overwatch player normal and ranked stats.
 |!rl [steam-id]|Shows Rocket League player ranked stats.
@@ -23,12 +24,11 @@ Install the dependencies
 ```
 npm install
 ```
-Configure the Bot by create a .env file and put some secrets in it
+Configure the Bot by creating a .env file from the .env.dist file and put some secrets in it
 ```
 EL_PUER_TOKEN=xxxxx      // Your Discord Application Key 
-RIOT_KEY=xxxxx           // Your Riot Games API Key
 BATTLENET_API_KEY=xxxxx  // Your Battle Net API Key
-RLS_TOKEN=xxxxx          // Your Rocket League Stats API Key
+...
 ```
 Run da bot
 ```
