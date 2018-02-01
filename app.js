@@ -78,7 +78,7 @@ const commands = {
           logger.log('error', `Erreur LoL - ${message}`, error);
         });
       } catch (err) {
-        msg.reply(err);
+        msg.reply(err.message);
       }
     },
   },
@@ -97,7 +97,7 @@ const commands = {
           logger.log('error', `Erreur OW Message - ${message}`, error);
         });
       } catch (err) {
-        msg.reply(err);
+        msg.reply(err.message);
       }
     },
   },
@@ -131,7 +131,7 @@ const commands = {
             break;
         }
       } catch (err) {
-        msg.reply(err);
+        msg.reply(err.message);
       }
     },
   },
@@ -150,7 +150,7 @@ const commands = {
           logger.log('error', `Erreur WoW Message - ${obj.embed}`, error);
         });
       } catch (err) {
-        msg.reply(err);
+        msg.reply(err.message);
       }
     },
   },
@@ -168,8 +168,7 @@ const commands = {
           logger.log('error', `Erreur PUBG Message - ${message}`, error);
         });
       } catch (err) {
-          console.log(err);
-        msg.reply(err);
+        msg.reply(err.message);
       }
     },
   },
@@ -187,7 +186,7 @@ const commands = {
           logger.log('error', `Erreur WoW Message - ${message}`, error);
         });
       } catch (err) {
-        msg.reply(err);
+        msg.reply(err.message);
       }
     },
   },
@@ -205,7 +204,7 @@ const commands = {
           logger.log('error', `Erreur Play Message - ${message}`, error);
         });
       } catch (err) {
-        msg.reply(err);
+        msg.reply(err.message);
       }
     },
   },
@@ -219,7 +218,7 @@ const commands = {
           logger.log('error', `Erreur Stop Message - ${message}`, error);
         });
       } catch (err) {
-        msg.reply(err);
+        msg.reply(err.message);
       }
     },
   },
@@ -228,10 +227,10 @@ const commands = {
     description: 'Affiche l\'aide pour ce brave ElPuer',
     method: (msg) => {
       const embed = [];
-      commands.forEach((command) => {
+      Object.keys(commands).forEach((command) => {
         embed.push({
-          name: command.usage,
-          value: command.description,
+          name: commands[command].usage,
+          value: commands[command].description,
         });
       });
       sendEmbedMessage(msg, 'Liste des commandes pour ce brave El Puer :dog: :', 16777215, embed).catch((error) => {

@@ -138,7 +138,7 @@ module.exports = {
   setRegion: region => new Promise((resolve, reject) => {
     regions.forEach((r) => {
       if (r.name === region) {
-        resolve(regions[r]);
+        resolve(r);
       }
     });
     reject(new Error(`Cette région n'existe pas ...\nRégions disponibles : ${regions.map(elem => elem.name).join(', ')}`));
