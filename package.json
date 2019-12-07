@@ -13,21 +13,20 @@
   },
   "main": "app.js",
   "dependencies": {
-    "blizzard.js": "^1.7.0",
-    "discord.js": "^11.3.0",
+    "blizzard.js": "^3.2.0",
+    "discord.js": "^11.5.1",
     "dotenv": "^2.0.0",
-    "eslint": "^4.16.0",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.6.1",
-    "node-opus": "^0.2.7",
-    "onchange": "^3.3.0",
-    "rls-api": "^1.1.0",
-    "rss-parser": "^2.12.1",
-    "winston": "^2.4.0",
-    "ytdl-core": "^0.7.24"
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "node-opus": "^0.2.9",
+    "onchange": "^6.1.0",
+    "rss-parser": "^3.7.3",
+    "winston": "^2.4.4",
+    "ytdl-core": "^1.0.3"
   },
   "devDependencies": {
-    "eslint-plugin-import": "^2.8.0"
+    "eslint-plugin-import": "^2.18.2"
   }
 }

@@ -1,4 +1,6 @@
-const rss = require('rss-parser');
+const Parser = require('rss-parser');
+
+const parser = new Parser();
 
 const types = ['general', 'news', 'video'];
 
@@ -26,30 +28,28 @@ const feeds = {
 };
 
 module.exports = {
-  getNewsByTypePlatform: (type, platform) => new Promise((resolve, reject) => {
+  getNewsByTypePlatform: (type, platform) => new Promise(async (resolve, reject) => {
     if (types.find(element => element === type)) {
       if (platforms.find(element => element === platform)) {
         if (typeof feeds[type][platform] !== typeof undefined) {
-          rss.parseURL(feeds[type][platform], (err, parsed) => {
-            if (!err) {
-              const data = parsed.feed;
-              const embed = [
-                {
-                  name: data.title,
-                  value: `<${data.link}>`,
-                },
-              ];
-              data.entries.splice(5).forEach((element) => {
-                embed.push({
-                  name: element.title,
-                  value: `<${element.link}>`,
-                });
+          try {
+            const feed = await parser.parseURL(feeds[type][platform]);
+            const embed = [
+              {
+                name: feed.title,
+                value: `<${feed.link}>`,
+              },
+            ];
+            feed.items.splice(5).forEach((element) => {
+              embed.push({
+                name: element.title,
+                value: `<${element.link}>`,
               });
-              resolve(embed);
-            } else {
-              reject(new Error('Une erreur est survenue lors de la récupération des données JVC'));
-            }
-          });
+            });
+            resolve(embed);
+          } catch (err) {
+            reject(new Error('Une erreur est survenue lors de la récupération des données JVC'));
+          }
         }
       } else {
         reject(new Error(`Cette plateforme n'existe pas ...\nPlateformes disponibles : ${platforms.join(', ')}`));

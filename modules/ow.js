@@ -1,11 +1,11 @@
 const https = require('https');
 
-const baseUrl = 'https://ow-api.herokuapp.com';
+const baseUrl = 'https://ow-api.com/v1';
 const regions = ['eu', 'us', 'kr', 'cn', 'global'];
 
 module.exports = {
   getProfileByBattleTag: (region, battletag, emojis) => new Promise((resolve, reject) => {
-    https.get(`${baseUrl}/profile/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}`, (res) => {
+    https.get(`${baseUrl}/stats/pc/${encodeURI(region)}/${encodeURI(battletag.replace('#', '-'))}/profile`, (res) => {
       let data = '';
       res.on('data', (d) => {
         data += d;
@@ -15,20 +15,20 @@ module.exports = {
         if (typeof data.statusCode === typeof undefined) {
           const embed = [
             {
-              name: info.username,
+              name: info.name,
               value: `Level : ${info.level}`,
             },
           ];
-          if (Object.keys(info.games.quickplay).length !== 0 && info.games.quickplay.constructor === Object) {
+          if (Object.keys(info.quickPlayStats).length !== 0 && info.quickPlayStats.constructor === Object) {
             embed.push({
               name: 'Quick',
-              value: `${info.games.quickplay.won} wins - ${info.playtime.quickplay}`,
+              value: `${info.quickPlayStats.games.won} wins - ${info.quickPlayStats.games.played}`,
             });
           }
-          if (Object.keys(info.games.competitive).length !== 0 && info.games.competitive.constructor === Object) {
+          if (Object.keys(info.competitiveStats).length !== 0 && info.competitiveStats === Object) {
             const item = {};
             item.name = 'Competitive';
-            if (info.competitive.rank === null) {
+            if (info.competitiveStats.rank === null) {
               item.value = 'Unranked';
             } else {
               item.value = `${info.competitive.rank} pts - ${emojis.find('name', `ow${info.competitive.rank_img.match(/\d+(?=\.png)/)}`)}`;
